@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Chela+One&display=swap');
+
+
+body {
+  font-family: Arial, sans-serif; 
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #2D407C;
+  color: white;
+  height: 8%;
+}
+
+.logo {
+  display: flex;
+  align-items: center; 
+}
+.logo img {
+  width: 90px; 
+  height: auto;
+  margin-left: 0px;
+}
+
+.logo-text {
+  font-family: 'Chela One', cursive; 
+}
+
+
+.actions {
+  display: flex;
+  gap: 10px; 
+
+  
+}
+.action {
+  display: flex;
+  gap: 10px; 
+}
+.action .btn {
+  padding: 10px 20px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  height: 40px;
+  margin-top: 0px;
+}
+.action .btn:hover {
+  background-color: #ffffff; 
+} 
+
+.btn{
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+
+.home-container {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f5f7fa;
+  height: 100%;
+}
+
+.home-content {
+  max-width: 80%;
+  color: #000;
+  align-items: center;
+  width: 100%;
+}
+
+h1 {
+  color: #000000;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif; /* Define a fonte padrão para outros títulos */
+}
+
+p {
+  font-size: 1.2em;
+  color: #525151;
+  margin-bottom: 10px;
+  font-family: Arial, sans-serif; /* Define a fonte padrão para parágrafos */
+}
+
+.highlight {
+  font-weight: bold;
+  color: #000000;
+}
+
+.secondary-text {
+  color: #000000;
+}
+
+.download-btn {
+  background-color: #051b64;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 50%;
+}
+
+.download-btn:hover {
+  background-color: #061292;
+}
+
+.home-image {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+}
+
+.home-image > img {
+  height: 60%;
+}
+
+.btn {
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.barraPesquisa {
+  position: relative; 
+  width: 500px; 
+  display: flex;
+  align-items: center;
+}
+
+.barraPesquisa input {
+  width: 100%;
+  padding: 10px 40px 10px 20px; 
+  border-radius: 20px;
+  border: 2px solid #ccc;
+  font-size: 16px;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
+  width: 30px;
+  height: 30px;
+  background-color: rgb(157, 198, 245);
+  border: 2px solid #575757;
+  border-radius: 50%;
+  cursor: pointer;
+  top: -4px; 
+}
+
+.search-icon i {
+  font-size: 16px;
+  color: #666;
+  line-height: 1; /* Isso garante que a altura da linha não afete o centramento */
+}
+
+.app {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.testimonials {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.highlight {
+  background-color: #325393;
+  color: white;
+  text-align: center;
+  padding: 30px;
+  width: 55%;
+  border-radius: 8px;
+  margin: 10px 0;
+  margin-left: 20%;
+}
+
+.mockups {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.mockups img {
+  max-width: 200px;
+  border-radius: 10px;
+}
+
+.image-celulares {
+  width: 100%;  
+  max-width: 700px; 
+  height: auto;  
+  display: block; 
+  margin: 0 auto; 
+}
+
