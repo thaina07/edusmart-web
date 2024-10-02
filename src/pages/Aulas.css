@@ -1,0 +1,129 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container-aula {
+    display: flex; /* Organiza a barra de matérias e o conteúdo em linha */
+    margin-top: 80px; /* Espaço abaixo do cabeçalho fixo */
+    padding: 20px;
+    flex-grow: 1; /* Faz com que o container ocupe todo o espaço disponível */
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #2D407C;
+    z-index: 1000;
+    display: flex;
+}
+
+.logo {
+    display: flex;
+    font-family: 'Chela One', cursive;
+    align-items: center;
+}
+
+.logo img {
+    width: 90px;
+    height: auto;
+    margin-left: 0px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.saudacao {
+    font-size: 16px;
+    color: #fffdfd;
+    margin-right: 30px;
+}
+
+.materias {
+    width: 200px; /* Largura fixa para a barra de matérias */
+    background-color: #f9f9f9;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* A barra de matérias não encolhe */
+    height: calc(100vh - 80px); /* Altura total da tela, descontando o header */
+    position: sticky;
+    top: 80px; /* Fica preso logo abaixo do header */
+}
+
+.materias-titulo {
+    font-size: 20px;
+    font-family: 'Chela One', cursive;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.materias-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.materias-lista li {
+    margin-bottom: 10px;
+}
+
+.materias-lista a {
+    text-decoration: none;
+    color: #1465bc;
+    font-size: 16px;
+    display: block;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.materias-lista a:hover {
+    background-color: #ececec;
+    color: #0f4d91;
+}
+
+.conteudo-aula {
+    padding: 20px;
+    margin-top: 80px; /* Espaço para o header */
+    margin-left: 220px; /* Espaço para a barra de matérias */
+    margin-bottom: 60px; /* Espaço para o footer */
+    height: calc(100vh - 80px - 60px); /* Altura ajustada */
+    flex-grow: 1;
+
+}
+.conteudo-materia h3,
+.conteudo-materia h4 {
+    margin-top: 15px;
+}
+
+.conteudo-materia ol {
+    padding-left: 20px;
+}
+
+/*@media (max-width: 768px) {
+    .container {
+        flex-direction: column; /* Mudança para coluna em telas menores 
+    }
+
+    .materias,
+    .conteudo {
+        width: 100%; /* Largura total em telas pequenas 
+    }
+
+    .barraPesquisa {
+        width: 100%;  Barra de pesquisa em tela cheia 
+    }
+} */
