@@ -73,6 +73,7 @@ body {
   color: #000;
   align-items: center;
   width: 100%;
+  margin-top: 100px;
 }
 
 h1 {
@@ -163,7 +164,7 @@ p {
   border: 2px solid #575757;
   border-radius: 50%;
   cursor: pointer;
-  top: -4px; 
+  margin-top: -4px; 
 }
 
 .search-icon i {

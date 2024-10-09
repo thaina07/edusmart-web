@@ -13,7 +13,7 @@ function Profile() {
         // Função para buscar dados do usuário da API
         async function fetchUserData() {
             try {
-                const response = await axios.get('https://05386a25-9acd-4b84-8acd-6fcbd630c722-00-t1eg5yb8e50p.janeway.replit.dev/users'); // Exemplo de URL da API
+                const response = await axios.get('https://05386a25-9acd-4b84-8acd-6fcbd630c722-00-t1eg5yb8e50p.janeway.replit.dev/api/users/users'); // Exemplo de URL da API
                 setUserData(response.data); // Armazena os dados do usuário no estado
             } catch (error) {
                 console.error("Erro ao buscar dados do usuário", error);

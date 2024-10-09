@@ -26,7 +26,7 @@ const Perfil = ({ setIsLogado }) => {
   // Marque a função como assíncrona
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const apiUrl = 'https://05386a25-9acd-4b84-8acd-6fcbd630c722-00-t1eg5yb8e50p.janeway.replit.dev/login'; 
+    const apiUrl = 'https://f533fab9-53d1-43b6-8ce1-37a26704fbff-00-2yo2wzmcactmx.picard.replit.dev/api/users/login'; 
 
     try {
       const response = await fetch(apiUrl, {
@@ -43,6 +43,7 @@ const Perfil = ({ setIsLogado }) => {
       if (response.ok) {
         setLoginStatus("Login efetuado com sucesso!");
         setIsLogado(true);  
+        localStorage.setItem('userName', data.nome); // Armazena o nome do usuário no localStorage
         navigate('/Home'); // Navegue para a Home
       } else {
         setLoginStatus(data.message || "Erro ao efetuar login. Verifique suas credenciais.");

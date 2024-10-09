@@ -9,6 +9,7 @@ function Home() {
   const navigate = useNavigate();
   // Estado para armazenar os dados de progresso
   const [progressos, setProgressos] = useState([]);
+  const userName = localStorage.getItem('userName') || 'Visitante';
 
   useEffect(() => {
     // Simulação de chamada de API
@@ -30,14 +31,14 @@ function Home() {
         <div className="logo"><img src={Logo} alt="Logo" />EDUSMART</div>
         <div className='barraPesquisa'>
           <input type="text" placeholder="Pesquise qualquer coisa" />
-          <span className="search-icon">
+          <span className="search-icon2">
             <i className="fas fa-search"></i>
           </span>
         </div>
 
         <div className="profile" onClick={handleLoginClick}>
           <img src={Perfil} alt="Perfil" className="profile-img" />
-          <span className="saudacao">Olá, Thainá</span>
+          <span className="saudacao">Olá, {userName}</span>
         </div>
       </header>
 
@@ -45,7 +46,7 @@ function Home() {
         <div className="materias">
           <h2 className="materias-titulo">Escolha a matéria</h2>
           <ul className="materias-lista">
-            <li><a href="/matematica">Matemática</a></li>
+            <li><a href="/Aulas">Matemática</a></li>
             <li><a href="/portugues">Português</a></li>
             <li><a href="/quimica">Química</a></li>
             <li><a href="/historia">História</a></li>
@@ -60,7 +61,7 @@ function Home() {
         </div>
 
         <div className="conteudo">
-            <h1 className="conteudo-titulo">Seja Bem-vindo(a) ao EduSmart Thainá</h1>
+            <h1 className="conteudo-titulo">Seja Bem-vindo(a) ao EduSmart {userName}</h1>
             <div className="banner"><img src={Banner} alt="banner-img"/></div>
             <h2 className="progresso-titulo">Seu progresso</h2>
             <div className="progresso-container">

@@ -79,7 +79,7 @@ body {
   }
   
   .register-form {
-    margin-top: 0px;
+    margin-top: 50%;
     padding: 30px;
     border-radius: 15px;
     max-width: 400px;
@@ -87,8 +87,6 @@ body {
     text-align: center;
     color: rgb(255, 255, 255);
     font-family: "Chela One", cursive;
-
-    margin-top: 20%;
   }
   
   h1 {

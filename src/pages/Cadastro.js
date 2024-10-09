@@ -33,34 +33,46 @@ const Cadastro = ({ setIsLogado }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (senha !== confirmSenha) {
-      setMsg('As senhas não coincidem!');
-      return;
-    }
 
-  
-    const usuario = { nome, email, senha, receberNotificacoes };
+    if (senha !== confirmSenha) {
+        setMsg('As senhas não coincidem!');
+        return;
+    }
+    if (!email || !nome || !senha || !confirmSenha) {
+        setMsg('Todos os campos são obrigatórios!');
+        return;
+    }
+    console.log('campos estão preenchidos')
+    const usuario = { nome, email, password: senha };
+    console.log(usuario)
 
     try {
-      const response = await fetch('https://27bc352d-8ef8-4b52-976f-c6126bf6661d-00-28ordud37745w.riker.replit.dev/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(usuario),
-      });
+        // Faz a requisição POST para a API de cadastro
+        const response = await fetch('https://f533fab9-53d1-43b6-8ce1-37a26704fbff-00-2yo2wzmcactmx.picard.replit.dev/api/users/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(usuario), // Converte o objeto usuário em JSON
+        });
+        console.log('response cadastrar: ', response)
 
-      if (response.ok) {
-        setIsLogado(true);
-        navigate('/');
-        setMsg('Cadastro feito com sucesso!');
-      } else {
-        setMsg('Erro ao cadastrar');
-      }
+        if (response.ok) {
+            setIsLogado(true);
+            localStorage.setItem('userName', nome); // Armazena o nome no localStorage
+            navigate('/Home'); // Redireciona para a página inicial
+            setMsg('Cadastro feito com sucesso!');
+        } else {
+            // Captura a mensagem de erro retornada pela API
+            const errorData = await response.json();
+            console.log(errorData)
+            setMsg(`Erro ao cadastrar: ${errorData.message || 'Erro desconhecido'}`);
+        }
     } catch (error) {
-      setMsg('Erro: ' + error.message);
+        // Captura e exibe qualquer erro que ocorra durante a requisição
+        setMsg('Erro: ' + error.message);
     }
-  };
+};
 
   return (
     <>
