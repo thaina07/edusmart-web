@@ -107,54 +107,37 @@ body {
   }
   
   
-  .materias {
-    position: fixed;
-    left: 0;
-    top: 80px; /* Ajustado para o header */
-    bottom: 0;
-    width: 200px;
-    background-color: #f9f9f9;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    overflow: auto;
+  .materias-lista li {
+    display: flex; /* Usar flexbox para alinhar ícone e texto */
+    align-items: center; /* Centraliza verticalmente */
 }
 
-.materias-titulo {
-    font-size: 20px;
-    font-family: 'Chela One', cursive;
-    margin-bottom: 15px;
-    color: #333;
+
+.materias-lista li a {
+  text-decoration: none; /* Remove o sublinhado do link */
+  color: #1465bc; /* Cor do texto */
+  width: 200px;
+  font-size: 16px; /* Tamanho da fonte */
+  display: flex; /* Para que o ícone e texto fiquem na mesma linha */
+  align-items: center; /* Alinha verticalmente */
+  padding: 10px; /* Espaçamento interno */
+  border-radius: 5px; /* Bordas arredondadas */
+  border: #aaa9a999 solid;
+  background-color: #fff; /* Cor de fundo */
+  transition: background-color 0.3s; /* Transição suave para a cor de fundo */
 }
 
-.materias-lista {
-    list-style: none;
-    padding: 0;
-    width: 100%;
+
+.materias-lista li a:hover {
+  background-color: #ececec; /* Cor de fundo ao passar o mouse */
+  color: #0f4d91; /* Cor do texto ao passar o mouse */
 }
 
-.materias-lista li {
-    margin-bottom: 10px;
-    width: 100%;
+.materias-lista li a .svg-inline--fa {
+  margin-right: 10px; /* Espaço entre ícone e texto */
 }
 
-.materias-lista a {
-    text-decoration: none;
-    color: #1465bc;
-    font-size: 16px;
-    display: block;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #fff;
-    transition: background-color 0.3s; /* Transição de fundo */
-}
 
-.materias-lista a:hover {
-    background-color: #ececec;
-    color: #0f4d91;
-}
 .conteudo-titulo{
     font-family: 'Chela One', cursive;
 }

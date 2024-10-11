@@ -1,144 +1,256 @@
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import axios from 'axios';
 import Logo from '../assets/logo.png';
 import Perfil from '../assets/perfil.png';
-import './Home.css';
+import './Aulas.css';
 
 function Aulas() {
-  const navigate = useNavigate(); // Inicializa o hook useNavigate
-  const { materia } = useParams(); // Pega o parâmetro dinâmico da URL (matéria)
-  const [conteudoAtual, setConteudoAtual] = useState(materia || 'matematica'); // Define um valor padrão
-  const userName = localStorage.getItem('userName') || 'Usuário'; // Pega o nome do usuário do localStorage
+  const navigate = useNavigate();
+  const { materia } = useParams();
+  const [conteudoAtual, setConteudoAtual] = useState(materia || 'matematica');
+  const [listaComponenteMaterias, setListaComponenteMaterias] = useState({});
+  const userName = localStorage.getItem('userName') || 'Usuário';
 
+  useEffect(() => {
+    async function buscandoProgresso() {
+      try {
+        const response = await axios.get('https://f533fab9-53d1-43b6-8ce1-37a26704fbff-00-2yo2wzmcactmx.picard.replit.dev/api/products/find');
+        console.log("resposta:", response.data.produtos);
+  
+        var listaMaterias = response.data.produtos; // Guarda a lista de produtos
+  
+        // Filtrando matérias por categorias
+        const listaMatematica = listaMaterias.filter((materia) => materia.categoria === "Matemática");
+        const listaPortugues = listaMaterias.filter((materia) => materia.categoria === "Português");
+        const listaFisica = listaMaterias.filter((materia) => materia.categoria === "Física");
+        const listaGeografia = listaMaterias.filter((materia) => materia.categoria === "Geografia");
+        const listaHistoria = listaMaterias.filter((materia) => materia.categoria === "História");
+        const listaQuimica = listaMaterias.filter((materia) => materia.categoria === "Química");
+        const listaSociologia = listaMaterias.filter((materia) => materia.categoria === "Sociologia");
+        const listaFilosofia = listaMaterias.filter((materia) => materia.categoria === "Filosofia");
+        const listaIngles = listaMaterias.filter((materia) => materia.categoria === "Inglês");
+
+        // Função para gerar os componentes das matérias
+        const gerarComponentes = (lista) => {
+          return lista.map((materia) => (
+            <div key={materia._id} className='produto' onClick={() => window.location.href = materia.videoUrl}
+            style={{ cursor: 'pointer' }} >
+              <img src={materia.imagem} alt={materia.nome} className="produto-img" />
+              <div className="produto-info">
+                <p className="produto-nome"> {materia.nome}</p>
+                <div className="progresso-barra">
+                  <div
+                    className="progresso-barra-preenchido"
+                    style={{ width: `${materia.progresso || 0}%` }}
+                  ></div>
+                </div>
+                <p>Progresso: {materia.progresso || 0}%</p>
+              </div>
+            </div>
+          ));
+        };
+
+        // Definindo o estado com todos os componentes gerados
+        setListaComponenteMaterias({
+          matematica: gerarComponentes(listaMatematica),
+          portugues: gerarComponentes(listaPortugues),
+          fisica: gerarComponentes(listaFisica),
+          geografia: gerarComponentes(listaGeografia),
+          historia: gerarComponentes(listaHistoria),
+          quimica: gerarComponentes(listaQuimica),
+          sociologia: gerarComponentes(listaSociologia),
+          filosofia: gerarComponentes(listaFilosofia),
+          ingles: gerarComponentes(listaIngles)
+        });
+
+      } catch (error) {
+        console.error("Erro ao buscar dados do produto", error);
+      }
+    }
+
+    buscandoProgresso();
+  }, []);
+  
 
   const conteudoMaterias = {
     matematica: (
-      <div className="conteudo">
+      <div className="geral">
         <h1 className='conteudo-titulo'>Matemática</h1>
-        <div className='matematica-card'>
-          <div className='produto'></div>
-        </div>
+        <div className="conteudo-card-wrapper">
+          <div className='conteudo-card'>
+            {/* {[1, 2, 3].map(produtoId => (
+              <div key={produtoId} className='produto'>
+                <p>Produto {produtoId}</p>
+                <div className="progresso-barra">
+                  <div
+                    className="progresso-barra-preenchido"
+                    style={{ width: `${progressos[produtoId]?.progresso || 0}%` }}
+                  ></div>
+                </div>
+                <p>Progresso: {progressos[produtoId]?.progresso || 0}%</p>
+              </div>
+            ))} */}
+            {listaComponenteMaterias.matematica}{/*mostra a lista de itens das materias */}
+          </div>
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.matematica}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.matematica}
+      </div>
+      </div>
       </div>
     ),
     portugues: (
-      <div className="conteudo">
-        <h1 className='conteudo-titulo'>Português: Gramática</h1>
-        <h3>Elementos da Frase</h3>
-        <p>
-          A língua portuguesa é rica e complexa. Uma frase é composta por sujeito e predicado.
-        </p>
-        <h4>Tipos de Sujeito:</h4>
-        <ul>
-          <li>Sujeito simples</li>
-          <li>Sujeito composto</li>
-          <li>Sujeito oculto</li>
-        </ul>
-        <h4>Exercícios:</h4>
-        <ol>
-          <li>Identifique o sujeito na frase: "O gato dorme no sofá."</li>
-          <li>Reescreva a frase no passado.</li>
-        </ol>
-      </div>
-    ),
-    quimica: (
-      <div className="conteudo">
-        <h1 className='conteudo-titulo'>Química: Introdução</h1>
-        <h3>O que é Química?</h3>
-        <p>
-          A química é a ciência que estuda a composição, estrutura e propriedades da matéria.
-        </p>
-        <h4>Principais Áreas da Química:</h4>
-        <ul>
-          <li>Química Orgânica</li>
-          <li>Química Inorgânica</li>
-          <li>Química Analítica</li>
-        </ul>
-        <h4>Experimentos Simples:</h4>
-        <ol>
-          <li>Reação do bicarbonato de sódio com vinagre.</li>
-          <li>Produção de gás oxigênio a partir da decomposição da água oxigenada.</li>
-        </ol>
-      </div>
-    ),
-    historia: (
-      <div className="conteudo">
-        <h1 className='conteudo-titulo'>História: Idade Média</h1>
-        <p>
-          A Idade Média é um período da história que se estende do século V ao século XV.
-        </p>
-        <h4>Principais Características:</h4>
-        <ul>
-          <li>Feudalismo</li>
-          <li>Crescimento do Cristianismo</li>
-          <li>Crusadas</li>
-        </ul>
-      </div>
-    ),
-    geografia: (
-      <div className="conteudo">
-        <h1 className='conteudo-titulo'>Geografia: Continentes</h1>
-        <p>
-          A Geografia estuda a superfície terrestre e suas interações com os seres humanos.
-        </p>
-        <h4>Os Continentes:</h4>
-        <ul>
-          <li>África</li>
-          <li>América</li>
-          <li>Ásia</li>
-          <li>Europa</li>
-          <li>Oceania</li>
-          <li>Antártida</li>
-        </ul>
+      <div className="geral">
+        <h1 className='conteudo-titulo'>Português</h1>
+        <div className="conteudo-card-wrapper">
+          <div className='conteudo-card'>
+            {listaComponenteMaterias.portugues}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.portugues}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.portugues}
+            </div>
+        </div>
       </div>
     ),
     fisica: (
-      <div className="conteudo">
-        <h1 className='conteudo-titulo'>Física: Leis de Newton</h1>
-        <p>
-          As leis de Newton descrevem o movimento dos corpos e as forças que atuam sobre eles.
-        </p>
-        <h4>Primeira Lei:</h4>
-        <p>Um corpo em repouso permanece em repouso, e um corpo em movimento permanece em movimento.</p>
+      <div className="geral">
+        <h1 className='conteudo-titulo'>Física</h1>
+        <div className="conteudo-card-wrapper">
+          <div className='conteudo-card'>
+           {listaComponenteMaterias.fisica}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.fisica}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.fisica}
+            </div>
+        </div>
+      </div>
+    ),
+    quimica: (
+      <div className="geral">
+        <h1 className='conteudo-titulo'>Química</h1>
+        <div className="conteudo-card-wrapper">
+          <div className='conteudo-card'>
+            {listaComponenteMaterias.quimica}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.quimica}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.quimica}
+          </div>
+        </div>
+      </div>
+    ),
+    geografia: (
+      <div className="geral">
+        <h1 className='conteudo-titulo'>Geografia</h1>
+        <div className="conteudo-card-wrapper">
+          <div className='conteudo-card'>
+            {listaComponenteMaterias.geografia}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.geografia}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.geografia}
+          </div>
+        </div>
+      </div>
+    ),
+    historia: (
+      <div className="geral">
+        <h1 className='conteudo-titulo'>História</h1>
+        <div className="conteudo-card-wrapper">
+          <div className='conteudo-card'>
+            {listaComponenteMaterias.historia}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.historia}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.historia}
+          </div>
+        </div>
       </div>
     ),
     sociologia: (
-      <div className="conteudo">
-        <h1 className='conteudo-titulo'>Sociologia: Estruturas Sociais</h1>
-        <p>
-          A sociologia estuda a sociedade, suas estruturas e suas dinâmicas.
-        </p>
-        <h4>Elementos das Estruturas Sociais:</h4>
-        <ul>
-          <li>Grupos sociais</li>
-          <li>Instituições</li>
-          <li>Classes sociais</li>
-        </ul>
+      <div className="geral">
+        <h1 className='conteudo-titulo'>Sociologia</h1>
+        <div className="conteudo-card-wrapper">
+          <div className='conteudo-card'>
+            {listaComponenteMaterias.sociologia}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.sociologia}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.sociologia}
+          </div>
+        </div>
       </div>
     ),
     filosofia: (
-      <div className="conteudo">
-        <h1 className='conteudo-titulo'>Filosofia: Questões Fundamentais</h1>
-        <p>
-          A filosofia busca entender questões fundamentais sobre a existência, conhecimento e ética.
-        </p>
+      <div className="geral">
+        <h1 className='conteudo-titulo'>Filosofia</h1>
+        <div className="conteudo-card-wrapper">
+          <div className='conteudo-card'>
+            {listaComponenteMaterias.filosofia}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.filosofia}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.filosofia}
+          </div>
+        </div>
       </div>
     ),
     ingles: (
-      <div className="conteudo">
-        <h1 className='conteudo-titulo'>Inglês: Gramática Básica</h1>
-        <p>
-          A gramática da língua inglesa é fundamental para a construção de frases corretas.
-        </p>
-        <h4>Estrutura da Frase:</h4>
-        <p>Uma frase básica em inglês é composta por sujeito, verbo e objeto.</p>
+      <div className="geral">
+        <h1 className='conteudo-titulo'>Inglês</h1>
+        <div className="conteudo-card-wrapper">
+          <div className='conteudo-card'>
+            {listaComponenteMaterias.ingles}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.ingles}
+          </div>
+
+          <div className='conteudo-card'>
+          {listaComponenteMaterias.ingles}
+          </div>
+        </div>
       </div>
     ),
   };
 
-  // Função para lidar com o clique no perfil
   const handleLoginClick = () => {
     navigate('/Profile');
-    console.log('Perfil clicado!');
   };
 
   return (
@@ -174,14 +286,11 @@ function Aulas() {
         </div>
 
         <div className="container-aula">
-        <div className="conteudo-aula">
-    <h2>{conteudoAtual.charAt(0).toUpperCase() + conteudoAtual.slice(1)}</h2>
-    <div className="conteudo-materia">
-      {conteudoMaterias[conteudoAtual]}
-      {/* Adicione um console.log aqui para verificar se está acessando corretamente */}
-      {console.log(conteudoMaterias[conteudoAtual])}
-    </div>
-  </div>
+          <div className="conteudo-aula">
+            <div className="conteudo-materia">
+              {conteudoMaterias[conteudoAtual]}
+            </div>
+          </div>
         </div>
       </div>
     </>

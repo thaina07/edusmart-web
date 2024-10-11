@@ -29,7 +29,7 @@ function App() {
           <Route path="/aulas/historia" element={<Aulas />} />
           <Route path="/aulas/ingles" element={<Aulas />} />
           <Route path="/aulas/sociologia" element={<Aulas />} />
-          <Route path="/aulas/fisiologia" element={<Aulas />} />
+          <Route path="/aulas/filosofia" element={<Aulas />} />
           <Route path="/aulas/fisica" element={<Aulas />} />
           <Route path="/aulas/questoes" element={<Aulas />} />
           <Route path='/profile' element={<Profile />} />
