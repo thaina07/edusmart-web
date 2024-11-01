@@ -3,6 +3,7 @@
 
 body {
   font-family: Arial, sans-serif; 
+  background-color: #fff;
 }
 
 .header {
@@ -66,15 +67,9 @@ body {
   justify-content: space-between;
   background-color: #f5f7fa;
   height: 100%;
+  margin-top: 8%;
 }
 
-.home-content {
-  max-width: 80%;
-  color: #000;
-  align-items: center;
-  width: 100%;
-  margin-top: 100px;
-}
 
 h1 {
   color: #000000;
@@ -121,7 +116,8 @@ p {
 }
 
 .home-image > img {
-  height: 60%;
+  height: 10%;
+  width: 90%;
 }
 
 .btn {
@@ -135,6 +131,9 @@ p {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 50%;
+  margin-top: 90%;
+  
 }
 
 .barraPesquisa {

@@ -12,66 +12,91 @@ function Aulas() {
   const [listaComponenteMaterias, setListaComponenteMaterias] = useState({});
   const userName = localStorage.getItem('userName') || 'Usuário';
 
-  useEffect(() => {
-    async function buscandoProgresso() {
-      try {
-        const response = await axios.get('https://f533fab9-53d1-43b6-8ce1-37a26704fbff-00-2yo2wzmcactmx.picard.replit.dev/api/products/find');
-        console.log("resposta:", response.data.produtos);
-  
-        var listaMaterias = response.data.produtos; // Guarda a lista de produtos
-  
-        // Filtrando matérias por categorias
-        const listaMatematica = listaMaterias.filter((materia) => materia.categoria === "Matemática");
-        const listaPortugues = listaMaterias.filter((materia) => materia.categoria === "Português");
-        const listaFisica = listaMaterias.filter((materia) => materia.categoria === "Física");
-        const listaGeografia = listaMaterias.filter((materia) => materia.categoria === "Geografia");
-        const listaHistoria = listaMaterias.filter((materia) => materia.categoria === "História");
-        const listaQuimica = listaMaterias.filter((materia) => materia.categoria === "Química");
-        const listaSociologia = listaMaterias.filter((materia) => materia.categoria === "Sociologia");
-        const listaFilosofia = listaMaterias.filter((materia) => materia.categoria === "Filosofia");
-        const listaIngles = listaMaterias.filter((materia) => materia.categoria === "Inglês");
-
-        // Função para gerar os componentes das matérias
-        const gerarComponentes = (lista) => {
-          return lista.map((materia) => (
-            <div key={materia._id} className='produto' onClick={() => window.location.href = materia.videoUrl}
-            style={{ cursor: 'pointer' }} >
-              <img src={materia.imagem} alt={materia.nome} className="produto-img" />
-              <div className="produto-info">
-                <p className="produto-nome"> {materia.nome}</p>
-                <div className="progresso-barra">
-                  <div
-                    className="progresso-barra-preenchido"
-                    style={{ width: `${materia.progresso || 0}%` }}
-                  ></div>
-                </div>
-                <p>Progresso: {materia.progresso || 0}%</p>
-              </div>
-            </div>
-          ));
-        };
-
-        // Definindo o estado com todos os componentes gerados
-        setListaComponenteMaterias({
-          matematica: gerarComponentes(listaMatematica),
-          portugues: gerarComponentes(listaPortugues),
-          fisica: gerarComponentes(listaFisica),
-          geografia: gerarComponentes(listaGeografia),
-          historia: gerarComponentes(listaHistoria),
-          quimica: gerarComponentes(listaQuimica),
-          sociologia: gerarComponentes(listaSociologia),
-          filosofia: gerarComponentes(listaFilosofia),
-          ingles: gerarComponentes(listaIngles)
-        });
-
-      } catch (error) {
-        console.error("Erro ao buscar dados do produto", error);
-      }
+  function getIconForMateria(materia) {
+    switch (materia) {
+      case 'matematica': return 'fa-calculator';
+      case 'portugues': return 'fa-book';
+      case 'fisica': return 'fa-atom';
+      case 'quimica': return 'fa-flask';
+      case 'geografia': return 'fa-globe';
+      case 'historia': return 'fa-landmark';
+      case 'sociologia': return 'fa-users';
+      case 'filosofia': return 'fa-brain';
+      case 'ingles': return 'fa-language';
+      default: return 'fa-question-circle';
     }
+  }
 
+  axios.defaults.timeout = 10000;
+
+  async function buscarProgressoPorDisciplina(disciplina) {
+    try {
+      const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/products/buscar', { disciplina });
+      return response.data.progressos || [];
+    } catch (error) {
+      console.error(`Erro ao buscar progresso para ${disciplina}: `, error);
+      return [];
+    }
+  }
+
+  async function gerarComponentes(lista, disciplina) {
+    const progressoDisciplina = await buscarProgressoPorDisciplina(disciplina);
+
+    return lista.map((materia) => {
+      const progresso = progressoDisciplina.find(p => p.disciplina === disciplina)?.progresso || 0;
+      return (
+        <div
+          key={materia._id}
+          className='produto'
+          onClick={() => handleVideoClick(materia.videoUrl)}
+          style={{ cursor: 'pointer' }}
+        >
+          <img src={materia.imagem} alt={materia.nome} className="produto-img" />
+          <div className="produto-info">
+            <p className="produto-nome"> {materia.nome}</p>
+            <div className="progresso-barra">
+              <div
+                className="progresso-barra-preenchido"
+                style={{ width: `${progresso}%` }}
+              ></div>
+            </div>
+            <p>Progresso: {progresso}%</p>
+          </div>
+        </div>
+      );
+    });
+  }
+
+  async function buscandoProgresso() {
+    try {
+      const response = await axios.get('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/products/find');
+      const listaMaterias = response.data.produtos;
+
+      const componentesMaterias = {
+        matematica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Matemática"), "matematica"),
+        portugues: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Português"), "portugues"),
+        fisica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Física"), "fisica"),
+        quimica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Química"), "quimica"),
+        geografia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Geografia"), "geografia"),
+        historia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "História"), "historia"),
+        sociologia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Sociologia"), "sociologia"),
+        filosofia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Filosofia"), "filosofia"),
+        ingles: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Inglês"), "ingles"),
+      };
+      
+      setListaComponenteMaterias(componentesMaterias);
+    } catch (err) {
+      console.error('Erro ao buscar progresso: ', err);
+    }
+  }
+
+  useEffect(() => {
     buscandoProgresso();
   }, []);
-  
+
+  const handleVideoClick = (url) => {
+    window.open(url, "_blank", "noreferrer");
+  };
 
   const conteudoMaterias = {
     matematica: (
@@ -79,28 +104,9 @@ function Aulas() {
         <h1 className='conteudo-titulo'>Matemática</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
-            {/* {[1, 2, 3].map(produtoId => (
-              <div key={produtoId} className='produto'>
-                <p>Produto {produtoId}</p>
-                <div className="progresso-barra">
-                  <div
-                    className="progresso-barra-preenchido"
-                    style={{ width: `${progressos[produtoId]?.progresso || 0}%` }}
-                  ></div>
-                </div>
-                <p>Progresso: {progressos[produtoId]?.progresso || 0}%</p>
-              </div>
-            ))} */}
-            {listaComponenteMaterias.matematica}{/*mostra a lista de itens das materias */}
+            {listaComponenteMaterias.matematica}
           </div>
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.matematica}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.matematica}
-      </div>
-      </div>
+        </div>
       </div>
     ),
     portugues: (
@@ -110,14 +116,6 @@ function Aulas() {
           <div className='conteudo-card'>
             {listaComponenteMaterias.portugues}
           </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.portugues}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.portugues}
-            </div>
         </div>
       </div>
     ),
@@ -126,16 +124,8 @@ function Aulas() {
         <h1 className='conteudo-titulo'>Física</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
-           {listaComponenteMaterias.fisica}
+            {listaComponenteMaterias.fisica}
           </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.fisica}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.fisica}
-            </div>
         </div>
       </div>
     ),
@@ -145,14 +135,6 @@ function Aulas() {
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.quimica}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.quimica}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.quimica}
           </div>
         </div>
       </div>
@@ -164,14 +146,6 @@ function Aulas() {
           <div className='conteudo-card'>
             {listaComponenteMaterias.geografia}
           </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.geografia}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.geografia}
-          </div>
         </div>
       </div>
     ),
@@ -181,14 +155,6 @@ function Aulas() {
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.historia}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.historia}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.historia}
           </div>
         </div>
       </div>
@@ -200,14 +166,6 @@ function Aulas() {
           <div className='conteudo-card'>
             {listaComponenteMaterias.sociologia}
           </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.sociologia}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.sociologia}
-          </div>
         </div>
       </div>
     ),
@@ -218,14 +176,6 @@ function Aulas() {
           <div className='conteudo-card'>
             {listaComponenteMaterias.filosofia}
           </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.filosofia}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.filosofia}
-          </div>
         </div>
       </div>
     ),
@@ -235,14 +185,6 @@ function Aulas() {
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.ingles}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.ingles}
-          </div>
-
-          <div className='conteudo-card'>
-          {listaComponenteMaterias.ingles}
           </div>
         </div>
       </div>
@@ -256,9 +198,10 @@ function Aulas() {
   return (
     <>
       <header className="header-home">
-        <div className="logo">
-          <img src={Logo} alt="Logo" />EDUSMART
-        </div>
+        <a href="/home" className="logo">
+          <img src={Logo} alt="Logo" />
+          EDUSMART
+        </a>
         <div className='barraPesquisa'>
           <input type="text" placeholder="Pesquise qualquer coisa" />
           <span className="search-icon2">
@@ -278,6 +221,7 @@ function Aulas() {
             {Object.keys(conteudoMaterias).map((key) => (
               <li key={key}>
                 <Link to={`/Aulas/${key}`} onClick={() => setConteudoAtual(key)}>
+                  <i className={`fas ${getIconForMateria(key)}`} style={{ marginRight: '8px' }} />
                   {key.charAt(0).toUpperCase() + key.slice(1)}
                 </Link>
               </li>

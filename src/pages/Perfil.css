@@ -55,7 +55,7 @@ body {
 }
 
 .imagem-container {
-  margin-top: 5%;
+  margin-top: 30%;
   display: flex;
   flex-direction: column;
   gap: 10px; /* Espaçamento entre as imagens */
@@ -88,7 +88,7 @@ body {
     text-align: center;
     color: rgb(255, 255, 255);
     font-family: "Chela One", cursive;
-    margin-top: 40%;
+    margin-top: 700px;
   }
   
   h1 {

@@ -8,6 +8,7 @@ import Apple from '../assets/apple.png';
 import Img1 from '../assets/img1.png';
 import Img2 from '../assets/img2.png';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { useGoogleLogin } from "@react-oauth/google";
 
 const Perfil = ({ setIsLogado }) => {  
   const navigate = useNavigate(); 
@@ -23,10 +24,14 @@ const Perfil = ({ setIsLogado }) => {
     navigate('/Perfil');
   };
 
+  const handleGoogleLogin = useGoogleLogin({
+    flow: 'auth-code'
+  })
+
   // Marque a função como assíncrona
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const apiUrl = 'https://f533fab9-53d1-43b6-8ce1-37a26704fbff-00-2yo2wzmcactmx.picard.replit.dev/api/users/login'; 
+    const apiUrl = 'https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/users/login'; 
 
     try {
       const response = await fetch(apiUrl, {
@@ -88,14 +93,14 @@ const Perfil = ({ setIsLogado }) => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
+              
             />
             <input
               type="password"
               placeholder="Senha"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
-              required
+              
             />
             <button className="submit">Fazer Login</button>
             <div className="forgot-password">
@@ -110,7 +115,7 @@ const Perfil = ({ setIsLogado }) => {
 
             <div className="opcoes">Outras opções de login</div>
             <div className="btn-opcoes">
-              <button className="google" onClick={handleLoginClick}><img src={Google} alt="Google"/></button>
+              <button className="google" onClick={handleGoogleLogin}><img src={Google} alt="Google"/></button>
               <button className="facebook" onClick={handleLoginClick}><img src={Facebook} alt="Facebook"/></button>
               <button className="apple" onClick={handleLoginClick}><img src={Apple} alt="Apple"/></button>
             </div>

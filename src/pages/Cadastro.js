@@ -48,7 +48,7 @@ const Cadastro = ({ setIsLogado }) => {
 
     try {
         // Faz a requisição POST para a API de cadastro
-        const response = await fetch('https://f533fab9-53d1-43b6-8ce1-37a26704fbff-00-2yo2wzmcactmx.picard.replit.dev/api/users/register', {
+        const response = await fetch('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

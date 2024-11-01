@@ -47,7 +47,8 @@ body {
 
 .container-home {
     display: flex;
-    margin-top: 80px; /* Espaço abaixo do cabeçalho fixo */
+    background-color: white;
+    margin-top: 0px; /* Espaço abaixo do cabeçalho fixo */
     padding: 20px;
     justify-content: center; /* Centraliza o conteúdo */
     gap: 20px; /* Espaçamento entre as colunas */
@@ -85,6 +86,7 @@ body {
     list-style: none;
     padding: 0;
     width: 100%;
+    margin-bottom: 10px;
 }
 
 .materias-lista li a {
@@ -130,6 +132,8 @@ body {
 /* Ajuste para deixar os cards lado a lado */
 .conteudo-card-wrapper {
     display: flex; /* Alinha os cards lado a lado */
+    height: 100%;
+    background-color: white;
     gap: 20px; /* Espaço entre os cards */
     justify-content: flex-start; /* Alinha os cards à esquerda */
     flex-wrap: wrap; /* Permite quebrar linha se o espaço não for suficiente */
@@ -144,8 +148,9 @@ body {
 
 .conteudo-card {
     background-color: #2D407C;
-    width: 400px; /* Largura fixa para os cards */
-    height: 440px;
+    width: 800px; /* Largura fixa para os cards */
+    height: 600px;
+    margin-left: 40px;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para efeito de elevação */
@@ -165,6 +170,7 @@ body {
 /* Estilos do componente produto */
 .produto {
     background-color: white;
+    margin-left: 10px;
     width: 90%;
     height: 90px; /* Ajusta a altura para acomodar a imagem */
     padding: 15px;
@@ -204,6 +210,7 @@ body {
 }
 
 .progresso-barra-preenchido {
+    transition: width 0.5s ease;
     background-color: #4caf50;
     height: 100%;
     border-radius: 5px;

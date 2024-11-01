@@ -14,7 +14,7 @@ function Home() {
 
   useEffect(() => {
     // Simulação de chamada de API
-    fetch('https://05386a25-9acd-4b84-8acd-6fcbd630c722-00-t1eg5yb8e50p.janeway.replit.dev/api/progress')  
+    fetch('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/buscar')  
       .then(response => response.json())
       .then(data => {
         setProgressos(data.progressos);
