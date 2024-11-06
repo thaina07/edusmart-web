@@ -5,6 +5,10 @@ import Logo from '../assets/logo.png';
 import Perfil from '../assets/perfil.png';
 import './Aulas.css';
 
+const userId = localStorage.getItem('userId'); // Adicione esta linha
+const userName = localStorage.getItem('userName') || 'Usuário';
+
+
 function Aulas() {
   const navigate = useNavigate();
   const { materia } = useParams();
@@ -31,11 +35,26 @@ function Aulas() {
 
   async function buscarProgressoPorDisciplina(disciplina) {
     try {
-      const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/products/buscar', { disciplina });
+      console.log('disciplina: ', disciplina)
+      const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/buscar', { disciplina });
       return response.data.progressos || [];
     } catch (error) {
-      console.error(`Erro ao buscar progresso para ${disciplina}: `, error);
+      console.error(`Erro ao buscar progresso para ${disciplina}: `, error.response ? error.response.data : error.message);
       return [];
+    }
+  }
+  // Função para inserir ou atualizar progresso
+  async function atualizarProgresso(userId, disciplina) {
+    try {
+      console.log('Enviando dados:', { userId, disciplina });  // Adicione para verificar os dados enviados
+      const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/atualizar', { 
+        userId,
+        disciplina 
+      });
+      console.log(response.data.message);
+    } catch (error) {
+      console.error('Erro ao atualizar progresso:', error.response ? error.response.data : error.message);
+      // Exiba o erro detalhado, isso pode ajudar a identificar o motivo do erro 404
     }
   }
 
@@ -44,11 +63,12 @@ function Aulas() {
 
     return lista.map((materia) => {
       const progresso = progressoDisciplina.find(p => p.disciplina === disciplina)?.progresso || 0;
+      console.log(materia)
       return (
         <div
           key={materia._id}
           className='produto'
-          onClick={() => handleVideoClick(materia.videoUrl)}
+          onClick={() => handleVideoClick(materia.videoUrl, materia.categoria)}
           style={{ cursor: 'pointer' }}
         >
           <img src={materia.imagem} alt={materia.nome} className="produto-img" />
@@ -94,9 +114,27 @@ function Aulas() {
     buscandoProgresso();
   }, []);
 
-  const handleVideoClick = (url) => {
-    window.open(url, "_blank", "noreferrer");
-  };
+  // Função para manipular clique no vídeo e atualizar progresso
+const handleVideoClick = async (url, disciplina, aulaId) => {
+  const userId = localStorage.getItem('userId'); // Pega o ID do usuário
+
+  // Envia os dados da aula e do usuário para atualizar o progresso para 100%
+  try {
+    const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/atualizarAula', { 
+      userId,
+      disciplina,
+      aulaId, // Identificador único da aula
+      progresso: 100 // Define o progresso da aula como 100%
+    });
+    console.log('Progresso da aula atualizado para 100%: ', response.data);
+  } catch (error) {
+    console.error('Erro ao atualizar progresso da aula:', error.response ? error.response.data : error.message);
+  }
+
+  // Abre o vídeo em uma nova janela
+  window.open(url, "_blank", "noreferrer");
+};
+
 
   const conteudoMaterias = {
     matematica: (

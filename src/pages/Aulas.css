@@ -155,6 +155,13 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para efeito de elevação */
     text-align: center;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    overflow: scroll;
 }
 
 .p {
@@ -168,26 +175,39 @@ body {
 }
 
 /* Estilos do componente produto */
+.produto-container {
+    display: flex;
+    flex-wrap: wrap;  /* Permite que os itens quebrem para a linha seguinte se o espaço não for suficiente */
+    gap: 20px;  /* Espaçamento entre os produtos */
+    justify-content: flex-start;  /* Alinha os produtos à esquerda */
+    margin-top: 80px; /* Ajuste para o espaço do cabeçalho fixo */
+}
+
 .produto {
-    background-color: white;
-    margin-left: 10px;
-    width: 90%;
-    height: 90px; /* Ajusta a altura para acomodar a imagem */
+    background-color: #fff;
+    border: 1px solid #ddd;
     padding: 15px;
-    border-radius: 5px;
-    color: black;
-    font-size: 1.2em;
-    margin-bottom: 40px; /* Espaço entre os produtos */
-    display: flex; /* Mantém o layout flexível */
-    align-items: center; /* Alinha verticalmente o conteúdo */
-    justify-content: flex-start; /* Alinha os itens à esquerda */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1 1 calc(33.33% - 20px);  /* Ajusta a largura para 3 produtos por linha, considerando o espaçamento */
+    max-width: 300px;  /* Limite de largura para cada produto */
+    box-sizing: border-box;  /* Para garantir que o padding não afete a largura */
+}
+
+.produto:hover {
+    transform: scale(1.05);  /* Efeito de aumento no hover */
 }
 
 .produto-img {
     width: 60px; /* Ajuste o tamanho da imagem */
     height: 60px;
     border-radius: 50%;
-    margin-right: 20px; /* Espaço entre a imagem e o conteúdo */
+    margin-bottom: 10px; /* Espaço entre a imagem e o conteúdo */
 }
 
 .produto-info {
@@ -216,7 +236,6 @@ body {
     border-radius: 5px;
 }
 
-/* Estilos da barra de progresso */
 .progress-bar {
     width: 100%;
     background-color: #f3f3f3;
@@ -240,6 +259,7 @@ body {
     color: #333;
     line-height: 1.6;
 }
-.conteudo-card p{
+
+.conteudo-card p {
     font-size: 10px;
 }
