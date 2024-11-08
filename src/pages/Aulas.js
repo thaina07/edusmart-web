@@ -5,8 +5,9 @@ import Logo from '../assets/logo.png';
 import Perfil from '../assets/perfil.png';
 import './Aulas.css';
 
-const userId = localStorage.getItem('userId'); // Adicione esta linha
+const userId = localStorage.getItem('userId');
 const userName = localStorage.getItem('userName') || 'Usuário';
+console.log('User ID após login:', localStorage.getItem('userId'));
 
 
 function Aulas() {
@@ -14,7 +15,6 @@ function Aulas() {
   const { materia } = useParams();
   const [conteudoAtual, setConteudoAtual] = useState(materia || 'matematica');
   const [listaComponenteMaterias, setListaComponenteMaterias] = useState({});
-  const userName = localStorage.getItem('userName') || 'Usuário';
 
   function getIconForMateria(materia) {
     switch (materia) {
@@ -32,10 +32,10 @@ function Aulas() {
   }
 
   axios.defaults.timeout = 10000;
+  
 
   async function buscarProgressoPorDisciplina(disciplina) {
     try {
-      console.log('disciplina: ', disciplina)
       const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/buscar', { disciplina });
       return response.data.progressos || [];
     } catch (error) {
@@ -43,42 +43,25 @@ function Aulas() {
       return [];
     }
   }
-  // Função para inserir ou atualizar progresso
-  async function atualizarProgresso(userId, disciplina) {
-    try {
-      console.log('Enviando dados:', { userId, disciplina });  // Adicione para verificar os dados enviados
-      const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/atualizar', { 
-        userId,
-        disciplina 
-      });
-      console.log(response.data.message);
-    } catch (error) {
-      console.error('Erro ao atualizar progresso:', error.response ? error.response.data : error.message);
-      // Exiba o erro detalhado, isso pode ajudar a identificar o motivo do erro 404
-    }
-  }
 
   async function gerarComponentes(lista, disciplina) {
     const progressoDisciplina = await buscarProgressoPorDisciplina(disciplina);
 
     return lista.map((materia) => {
-      const progresso = progressoDisciplina.find(p => p.disciplina === disciplina)?.progresso || 0;
-      console.log(materia)
+      const progresso = progressoDisciplina.find(p => p.aulaId === materia._id)?.progresso || 0;
+
       return (
         <div
           key={materia._id}
           className='produto'
-          onClick={() => handleVideoClick(materia.videoUrl, materia.categoria)}
+          onClick={() => handleVideoClick(materia.videoUrl, disciplina, materia._id)}
           style={{ cursor: 'pointer' }}
         >
           <img src={materia.imagem} alt={materia.nome} className="produto-img" />
           <div className="produto-info">
-            <p className="produto-nome"> {materia.nome}</p>
+            <p className="produto-nome">{materia.nome}</p>
             <div className="progresso-barra">
-              <div
-                className="progresso-barra-preenchido"
-                style={{ width: `${progresso}%` }}
-              ></div>
+              <div className="progresso-barra-preenchido" style={{ width: `${progresso}%` }}></div>
             </div>
             <p>Progresso: {progresso}%</p>
           </div>
@@ -114,28 +97,43 @@ function Aulas() {
     buscandoProgresso();
   }, []);
 
-  // Função para manipular clique no vídeo e atualizar progresso
-const handleVideoClick = async (url, disciplina, aulaId) => {
-  const userId = localStorage.getItem('userId'); // Pega o ID do usuário
+  const handleVideoClick = async (url, disciplina, aulaId) => {
+    // Recupera o userId do localStorage ou de outro método que você usa para armazenar a informação do usuário
+    const userId = localStorage.getItem('userId'); // Ou use outro método como um estado global
+  
+    if (!userId) {
+      console.error('User ID is null!');
+      alert('Usuário não encontrado. Por favor, faça login.');
+      return;
+    }
+  
+    console.log('User ID:', userId); // Verifique se o userId está correto
+    console.log('Disciplina:', disciplina);
+    console.log('Aula ID:', aulaId);
+  
+    try {
+      // Realiza a requisição POST para atualizar o progresso da aula
+      const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/atualizarAula', { 
+        userId,          // Envia o userId
+        disciplina,      // Envia a disciplina
+        aulaId           // Envia o ID da aula
+      });
+      
+      console.log('Progresso atualizado:', response.data);
+    } catch (error) {
+      console.error('Erro ao atualizar progresso:', error.response ? error.response.data : error.message);
+    }
+  
+    // Abre o vídeo em uma nova aba
+    window.open(url, "_blank", "noreferrer");
+  };
+  
+  
+  const handleLoginClick = () => {
+    navigate('/Profile');
+  };
 
-  // Envia os dados da aula e do usuário para atualizar o progresso para 100%
-  try {
-    const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/atualizarAula', { 
-      userId,
-      disciplina,
-      aulaId, // Identificador único da aula
-      progresso: 100 // Define o progresso da aula como 100%
-    });
-    console.log('Progresso da aula atualizado para 100%: ', response.data);
-  } catch (error) {
-    console.error('Erro ao atualizar progresso da aula:', error.response ? error.response.data : error.message);
-  }
-
-  // Abre o vídeo em uma nova janela
-  window.open(url, "_blank", "noreferrer");
-};
-
-
+  // Definindo a variável `conteudoMaterias`
   const conteudoMaterias = {
     matematica: (
       <div className="geral">
@@ -227,10 +225,6 @@ const handleVideoClick = async (url, disciplina, aulaId) => {
         </div>
       </div>
     ),
-  };
-
-  const handleLoginClick = () => {
-    navigate('/Profile');
   };
 
   return (

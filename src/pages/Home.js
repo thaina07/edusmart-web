@@ -11,6 +11,7 @@ function Home() {
   const navigate = useNavigate();
   const [progressos, setProgressos] = useState([]);
   const userName = localStorage.getItem('userName') || 'Visitante';
+  console.log('User ID após login:', localStorage.getItem('userId'));
 
   useEffect(() => {
     // Simulação de chamada de API

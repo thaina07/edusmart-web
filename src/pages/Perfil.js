@@ -44,11 +44,12 @@ const Perfil = ({ setIsLogado }) => {
 
       const data = await response.json();
 
-      // Verifique se a resposta indica sucesso
+      console.log("oie", data.userId);
       if (response.ok) {
         setLoginStatus("Login efetuado com sucesso!");
         setIsLogado(true);  
-        localStorage.setItem('userName', data.nome); // Armazena o nome do usuário no localStorage
+        localStorage.setItem('userName', data.nome); // Armazena o nome do usuário
+        localStorage.setItem('userId', data.userId); // Certifique-se de armazenar o userId
         navigate('/Home'); // Navegue para a Home
       } else {
         setLoginStatus(data.message || "Erro ao efetuar login. Verifique suas credenciais.");
