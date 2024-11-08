@@ -75,6 +75,7 @@ function App() {
             <Route path="/aulas/portugues" element={<Aulas />} />
             <Route path="/aulas/quimica" element={<Aulas />} />
             <Route path="/aulas/geografia" element={<Aulas />} />
+            <Route path="/aulas/biologia" element={<Aulas />} />
             <Route path="/aulas/historia" element={<Aulas />} />
             <Route path="/aulas/ingles" element={<Aulas />} />
             <Route path="/aulas/sociologia" element={<Aulas />} />

@@ -22,6 +22,7 @@ function Aulas() {
       case 'portugues': return 'fa-book';
       case 'fisica': return 'fa-atom';
       case 'quimica': return 'fa-flask';
+      case 'biologia': return 'fa-atom';
       case 'geografia': return 'fa-globe';
       case 'historia': return 'fa-landmark';
       case 'sociologia': return 'fa-users';
@@ -80,6 +81,7 @@ function Aulas() {
         portugues: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Português"), "portugues"),
         fisica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Física"), "fisica"),
         quimica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Química"), "quimica"),
+        biologia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Biologia"), "biologia"),
         geografia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Geografia"), "geografia"),
         historia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "História"), "historia"),
         sociologia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Sociologia"), "sociologia"),
@@ -171,6 +173,16 @@ function Aulas() {
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.quimica}
+          </div>
+        </div>
+      </div>
+    ),
+    biologia: (
+      <div className="geral">
+        <h1 className='conteudo-titulo'>Biologia</h1>
+        <div className="conteudo-card-wrapper">
+          <div className='conteudo-card'>
+            {listaComponenteMaterias.biologia}
           </div>
         </div>
       </div>

@@ -15,7 +15,15 @@ function Home() {
 
   useEffect(() => {
     // Simulação de chamada de API
-    fetch('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/buscar')  
+    const userIdItem = localStorage.getItem('userId');
+    console.log('betinho: ', userIdItem)
+    fetch('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/buscarUser', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId: userIdItem })
+    })
       .then(response => response.json())
       .then(data => {
         setProgressos(data.progressos);
@@ -69,7 +77,7 @@ function Home() {
           <div className="progresso-container">
             {progressos.map((item) => (
               <div className="progresso-quadrado" key={item.id}>
-                Progresso {item.id}
+                Progresso {item.discplina}
                 <div className="progress-bar">
                   <div className="progress" style={{ width: `${item.progresso}%` }}></div>
                 </div>
