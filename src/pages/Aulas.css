@@ -46,6 +46,7 @@ body {
 }
 
 .container-home {
+    position: relative;
     display: flex;
     background-color: white;
     margin-top: 0px; /* Espaço abaixo do cabeçalho fixo */
@@ -147,6 +148,7 @@ body {
 }
 
 .conteudo-card {
+    position: relative;
     background-color: #2D407C;
     width: 800px; /* Largura fixa para os cards */
     height: 600px;
@@ -155,12 +157,9 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para efeito de elevação */
     text-align: center;
-
     display: flex;
     flex-wrap: wrap;
-
     gap: 12px;
-
     overflow: scroll;
 }
 
@@ -231,9 +230,28 @@ body {
 
 .progresso-barra-preenchido {
     transition: width 0.5s ease;
-    background-color: #4caf50;
     height: 100%;
+    background-color: rgba(0, 0, 0, .45);
+    width: 100%;
     border-radius: 5px;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.progresso-barra-verde {
+    transition: 350ms ease;
+
+    left: 0%;
+
+    height: 100%;
+
+    background-color: #4caf50;
+
+    z-index: 2;
+
+    position: absolute;
 }
 
 .progress-bar {
@@ -263,3 +281,11 @@ body {
 .conteudo-card p {
     font-size: 10px;
 }
+.boneco {
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    position: absolute;
+    transition: all 0.1s ease;  /* Tornando o movimento mais suave */
+  }
+  
