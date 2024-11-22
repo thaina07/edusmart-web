@@ -47,8 +47,8 @@ function Aulas() {
 
   async function buscarProgressoPorDisciplina(disciplina) {
     try {
-      const response = await axios.get('https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/progress/buscarProgresso', {
-        params: { disciplina, userId }
+      const response = await axios.post('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/progress/buscarProgresso', {
+        disciplina, userId
       });
       console.log('Resposta da API:', response.data);
       return response.data || [];
@@ -65,7 +65,7 @@ function Aulas() {
     // Verifique a estrutura da resposta antes de tentar acessar
     console.log('Progresso da disciplina:', progressoDisciplina);
   
-    return lista.map((materia, index) => {
+    return lista.map((materia) => {
       const progresso = progressoDisciplina && progressoDisciplina.length > 0
         ? progressoDisciplina.find(p => p.aulaId === materia._id)?.progresso || 0
         : 0;
@@ -74,7 +74,7 @@ function Aulas() {
         <div
           key={materia._id}
           className='produto'
-          onClick={() => handleVideoClick(materia.videoUrl, disciplina, materia._id, index)}
+          onClick={() => handleVideoClick(materia.videoUrl, disciplina, materia._id, materia.nome)}
           style={{ cursor: 'pointer' }}
         >
           <img src={materia.imagem} alt={materia.nome} className="produto-img" />
@@ -95,20 +95,20 @@ function Aulas() {
 
   async function buscandoProgresso() {
     try {
-      const response = await axios.get('https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/products/find');
+      const response = await axios.get('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/products/find');
       const listaMaterias = response.data.produtos;
 
       const componentesMaterias = {
-        matematica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Matemática"), "matematica"),
-         portugues: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Português"), "portugues"),
-        fisica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Física"), "fisica"),
-        quimica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Química"), "quimica"),
-        biologia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Biologia"), "biologia"),
-        geografia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Geografia"), "geografia"),
-        historia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "História"), "historia"),
-        sociologia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Sociologia"), "sociologia"),
-        filosofia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Filosofia"), "filosofia"),
-        ingles: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Inglês"), "ingles"),
+        matematica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Matemática"), "Matemática"),
+         portugues: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Português"), "Português"),
+        fisica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Física"), "Física"),
+        quimica: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Química"), "Química"),
+        biologia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Biologia"), "Biologia"),
+        geografia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Geografia"), "Geografia"),
+        historia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "História"), "História"),
+        sociologia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Sociologia"), "Sociologia"),
+        filosofia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Filosofia"), "Filosofia"),
+        ingles: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Inglês"), "Inglês"),
       };
       setListaComponenteMaterias(componentesMaterias);
     } catch (err) {
@@ -157,8 +157,10 @@ function Aulas() {
     buscandoProgresso();
   }, [materia]); 
 
-  const handleVideoClick = async (url, disciplina, aulaId) => {
+  const handleVideoClick = async ( url, disciplina, aulaId, aula) => {
     const userId = localStorage.getItem('userId');
+    console.log('Aula ID:', aulaId);
+
   
     if (!userId) {
       console.error('User ID is null!');
@@ -167,10 +169,10 @@ function Aulas() {
     }
   
     try {
-      const response = await axios.post('https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/progress/atualizarAula', {
+      const response = await axios.post('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/progress/atualizarAula', {
         userId,
         disciplina,
-        aulaId
+        aula
       });
   
       console.log('Progresso atualizado:', response.data);

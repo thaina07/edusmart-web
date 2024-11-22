@@ -10,6 +10,8 @@ import Img2 from '../assets/img2.png';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useGoogleLogin } from "@react-oauth/google";
 
+import axios from "axios";
+
 const Perfil = ({ setIsLogado }) => {  
   const navigate = useNavigate(); 
   const [email, setEmail] = useState('');
@@ -31,7 +33,8 @@ const Perfil = ({ setIsLogado }) => {
   // Marque a função como assíncrona
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const apiUrl = 'https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/users/login'; 
+    const apiUrl = 'https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/users/login'; 
+
 
     try {
       const response = await fetch(apiUrl, {

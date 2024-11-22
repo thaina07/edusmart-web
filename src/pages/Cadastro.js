@@ -44,7 +44,7 @@ const Cadastro = ({ setIsLogado }) => {
 
     try {
         // Faz a requisição POST para a API de cadastro
-        const response = await fetch('https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/users/register', {
+        const response = await fetch('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
