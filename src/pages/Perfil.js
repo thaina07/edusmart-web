@@ -31,7 +31,7 @@ const Perfil = ({ setIsLogado }) => {
   // Marque a função como assíncrona
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const apiUrl = 'https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/users/login'; 
+    const apiUrl = 'https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/users/login'; 
 
     try {
       const response = await fetch(apiUrl, {
@@ -41,13 +41,13 @@ const Perfil = ({ setIsLogado }) => {
         },
         body: JSON.stringify({ email, senha }),
       });
-
+      console.log('Resposta da API:', response);
       const data = await response.json();
-
+      console.log('Dados recebidos:', data); 
       console.log("oie", data.userId);
       if (response.ok) {
         setLoginStatus("Login efetuado com sucesso!");
-        setIsLogado(true);  
+  
         localStorage.setItem('userName', data.nome); // Armazena o nome do usuário
         localStorage.setItem('userId', data.userId); // Certifique-se de armazenar o userId
         navigate('/Home'); // Navegue para a Home

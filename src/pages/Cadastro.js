@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import './Cadastro.css';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../assets/logo.png';
-import Google from '../assets/google.png';
-import Facebook from '../assets/facebook.png';
-import Apple from '../assets/apple.png';
 import Img1 from '../assets/img1.png';
 import Img2 from '../assets/img2.png';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -12,7 +9,6 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
 const Cadastro = ({ setIsLogado }) => {
-
   const [receberNotificacoes, setReceberNotificacoes] = useState(false);
   const [loginStatus, setLoginStatus] = useState(''); 
   const [email, setEmail] = useState('');
@@ -48,7 +44,7 @@ const Cadastro = ({ setIsLogado }) => {
 
     try {
         // Faz a requisição POST para a API de cadastro
-        const response = await fetch('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/users/register', {
+        const response = await fetch('https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

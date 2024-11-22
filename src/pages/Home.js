@@ -1,55 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
 import Logo from '../assets/logo.png';
 import Perfil from '../assets/perfil.png';
 import Banner from '../assets/banner1.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Importando os ícones
-import { faCalculator, faBookOpen, faFlask, faGlobe, faHistory, faUsers, faComments, faPen, faLanguage, faQuestion } from '@fortawesome/free-solid-svg-icons'; // Adicione os ícones que precisar
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalculator, faBookOpen, faFlask, faGlobe, faHistory, faUsers, faComments, faPen, faLanguage, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import './Home.css';
 import axios from "axios";
 
 function Home() {
   const navigate = useNavigate();
   const [progressos, setProgressos] = useState([]);
-  const userImage = localStorage.getItem('userImage'); // Assumindo que você salvou a URL no localStorage
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const userImage = localStorage.getItem('userImage');
   localStorage.setItem('userName', 'Nome do usuário');
   const userName = localStorage.getItem('userName') || 'Visitante';
-  console.log(localStorage.getItem('userName'));
-  console.log('User ID após login:', localStorage.getItem('userId'));
 
-  async function buscarProgressosHome() {
+  const buscarProgressosHome = useCallback(async () => {
     const userIdItem = localStorage.getItem('userId');
-
-    const listaProgresso = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/buscarUser', {
-      userId: userIdItem
-    });
-
-    if (listaProgresso.data) {
-      setProgressos(listaProgresso.data.progressos);
-      console.log('clcalcla', progressos)
+    if (!userIdItem) {
+      console.error('userId enviado:', userIdItem);
+      setLoading(false);
+      return;
     }
-  }
+
+    try {
+      const listaProgresso = await axios.post('https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/progress/buscarUser', {
+        userId: userIdItem
+      });
+    
+      if (listaProgresso.data) {
+        setProgressos(listaProgresso.data.progressos);
+      }
+    } catch (error) {
+      if (error.response) {
+        // Caso o erro tenha uma resposta do servidor
+        console.error('Erro na requisição:', error.response.data);
+      } else if (error.request) {
+        // Caso a requisição tenha sido feita mas não tenha recebido resposta
+        console.error('Erro na requisição sem resposta:', error.request);
+      } else {
+        // Caso o erro tenha sido causado por outra coisa
+        console.error('Erro desconhecido:', error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    // Simulação de chamada de API
-    const userIdItem = localStorage.getItem('userId');
-    console.log('betinho: ', userIdItem);
-
     buscarProgressosHome();
-
-    // fetch('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/buscarUser', {
-    //   method: "POST",
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ userId: userIdItem })
-    // })
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     setProgressos(data.progressos);
-    //   })
-    //   .catch(error => console.error('Erro ao buscar progresso:', error));
-  }, []);
+  }, [buscarProgressosHome]);
 
   const handleLoginClick = () => {
     navigate('/Profile');
@@ -99,20 +102,19 @@ function Home() {
           <div className="banner"><img src={Banner} alt="banner-img" /></div>
           <h2 className="progresso-titulo">Seu progresso</h2>
           <div className="progresso-container">
-            {progressos ? (
-              progressos.map((item) => (
-                <div className="progresso-quadrado" key={item.id}>
-                  Progresso {item.discplina}
-                  <div className="progress-bar">
-                    <div className="progress" style={{ width: `${item.progresso}%` }}></div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>Nenhum progresso encontrado</p>
-            )}
-
-          </div>
+  {progressos && progressos.length > 0 ? (
+    progressos.map((item) => (
+      <div className="progresso-quadrado" key={item.id}>
+        Progresso {item.discplina}
+        <div className="progress-bar">
+          <div className="progress" style={{ width: `${item.progresso}%` }}></div>
+        </div>
+      </div>
+    ))
+  ) : (
+    <p>Nenhum progresso encontrado</p>
+  )}
+</div>
         </div>
       </div>
     </>

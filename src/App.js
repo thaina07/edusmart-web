@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import axios from 'axios';
-import { GoogleLogin, useGoogleLogin, googleLogout, GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin, useGoogleLogin, googleLogout} from '@react-oauth/google';
 import './App.css';
 
 import Home from './pages/Home';
@@ -13,7 +13,7 @@ import Aulas from './pages/Aulas';
 import VideoPage from './pages/VideoPage';
 
 function App() {
-  const [isLogado, setIsLogado] = useState(false);
+  const [ setIsLogado] = useState(false);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
 
@@ -61,7 +61,7 @@ function App() {
             </div>
           ) : (
             <GoogleLogin>
-              <button>Entrar com o Google 🚀</button>
+              <button>Entrar com o Google <span role="img" aria-label="foguete">🚀</span></button>
             </GoogleLogin>
           )}
 

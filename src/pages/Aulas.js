@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
+import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Logo from '../assets/logo.png';
 import Perfil from '../assets/perfil.png';
 import './Aulas.css';
-
 
 const userId = localStorage.getItem('userId');
 const userName = localStorage.getItem('userName') || 'Usuário';
@@ -12,12 +12,14 @@ console.log('User ID após login:', localStorage.getItem('userId'));
 
 
 function Aulas() {
-  const [posX, setPosX] = useState(100); // Posição inicial X
-  const [posY, setPosY] = useState(100); // Posição inicial Y
-  const [velocidadeX, setVelocidadeX] = useState(2); // Velocidade do movimento horizontal
-  const [velocidadeY, setVelocidadeY] = useState(2); // Velocidade do movimento vertical
-  const conteudoCardRef = useRef(null); // Referência para o container
-  const bonecoRef = useRef(null); // Referência para o boneco
+  const [velocidadeY, setVelocidadeY] = useState(2);
+  const [posX, setPosX] = useState(0); // Posição inicial X
+  const [posY, setPosY] = useState(0); // Posição inicial Y
+  const [velocidadeX, setVelocidadeX] = useState(2);
+  const bonecoRef = useRef(null); // Definindo a referência
+  const bonecoRefCard = useRef(null); // Ref para o boneco no card
+  const bonecoRefMenu = useRef(null); // Ref para o boneco no menu de matérias
+  const conteudoCardRef = useRef(null); // Ref para o conteúdo onde o boneco se move
   const navigate = useNavigate();
   const { materia } = useParams();
   const [conteudoAtual, setConteudoAtual] = useState(materia || 'matematica');
@@ -45,24 +47,29 @@ function Aulas() {
 
   async function buscarProgressoPorDisciplina(disciplina) {
     try {
-      const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/buscar', { disciplina: "Matemática" });
-      console.log('queue', response.data)
-      return response.data.progressos || [];
+      const response = await axios.get('https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/progress/buscarProgresso', {
+        params: { disciplina, userId }
+      });
+      console.log('Resposta da API:', response.data);
+      return response.data || [];
     } catch (error) {
       console.error(`Erro ao buscar progresso para ${disciplina}: `, error.response ? error.response.data : error.message);
       return [];
     }
   }
+  
 
   async function gerarComponentes(lista, disciplina) {
     const progressoDisciplina = await buscarProgressoPorDisciplina(disciplina);
-
-
-    console.log('roberto: ', progressoDisciplina);
-
+    
+    // Verifique a estrutura da resposta antes de tentar acessar
+    console.log('Progresso da disciplina:', progressoDisciplina);
+  
     return lista.map((materia, index) => {
-      const progresso = progressoDisciplina.find(p => p.aulaId === materia._id)?.progresso || 0;
-
+      const progresso = progressoDisciplina && progressoDisciplina.length > 0
+        ? progressoDisciplina.find(p => p.aulaId === materia._id)?.progresso || 0
+        : 0;
+  
       return (
         <div
           key={materia._id}
@@ -75,7 +82,7 @@ function Aulas() {
             <p className="produto-nome">{materia.nome}</p>
             <div className="progresso-barra">
               <div className="progresso-barra-preenchido">
-                <div className='progresso-barra-verde' style={{width: `${progresso}%`}}></div>
+                <div className='progresso-barra-verde' style={{ width: `${progresso}%` }}></div>
               </div>
             </div>
             <p>Progresso: {progresso}%</p>
@@ -83,11 +90,12 @@ function Aulas() {
         </div>
       );
     });
-  }
+  }  
+  
 
   async function buscandoProgresso() {
     try {
-      const response = await axios.get('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/products/find');
+      const response = await axios.get('https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/products/find');
       const listaMaterias = response.data.produtos;
 
       const componentesMaterias = {
@@ -102,7 +110,6 @@ function Aulas() {
         filosofia: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Filosofia"), "filosofia"),
         ingles: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Inglês"), "ingles"),
       };
-      
       setListaComponenteMaterias(componentesMaterias);
     } catch (err) {
       console.error('Erro ao buscar progresso: ', err);
@@ -111,80 +118,72 @@ function Aulas() {
   useEffect(() => {
     const moverBoneco = () => {
       const conteudoCard = conteudoCardRef.current;
-      const boneco = bonecoRef.current;
-
-      if (!conteudoCard || !boneco) {
-        return;
-      }
-
-      const limiteX = conteudoCard.offsetWidth - boneco.offsetWidth - 20;  // Limite horizontal
-      const limiteY = conteudoCard.offsetHeight - boneco.offsetHeight - 20;  // Limite vertical
-
-      if (posX >= limiteX || posX <= 0) {
-        setVelocidadeX(prev => -prev);  // Inverte a direção horizontal
-      }
-
-      if (posY >= limiteY || posY <= 0) {
-        setVelocidadeY(prev => -prev);  // Inverte a direção vertical
-      }
-
-      setPosX(prev => prev + velocidadeX);
-      setPosY(prev => prev + velocidadeY);
-
+      const bonecoCard = bonecoRefCard.current;
+  
+      if (!conteudoCard || !bonecoCard) return;
+  
+      const limiteEsquerda = 0;
+      const limiteDireita = conteudoCard.offsetWidth - bonecoCard.offsetWidth;
+      const limiteSuperior = 0;
+      const limiteInferior = conteudoCard.offsetHeight - bonecoCard.offsetHeight;
+  
+      // Atualizando posX
+      setPosX((prevPosX) => {
+        const novaPosX = prevPosX + velocidadeX;
+        if (novaPosX >= limiteDireita || novaPosX <= limiteEsquerda) {
+          setVelocidadeX((prevVelocidade) => -prevVelocidade);
+        }
+        return novaPosX;
+      });
+  
+      // Atualizando posY
+      setPosY((prevPosY) => {
+        const novaPosY = prevPosY + velocidadeY;
+        if (novaPosY >= limiteInferior || novaPosY <= limiteSuperior) {
+          setVelocidadeY((prevVelocidade) => -prevVelocidade);
+        }
+        return novaPosY;
+      });
+  
       requestAnimationFrame(moverBoneco);
     };
-
+  
     const animacaoId = requestAnimationFrame(moverBoneco);
-
-    return () => {
-      cancelAnimationFrame(animacaoId);  // Limpa a animação ao desmontar
-    };
-  }, [velocidadeX, velocidadeY, posX, posY]);
-
+    return () => cancelAnimationFrame(animacaoId);
+  }, [velocidadeX, velocidadeY]);
+  
   
   useEffect(() => {
-    // Intervalo para atualizar o progresso
-    const refrescarProgressos = setInterval(() => {
-      buscandoProgresso();
-    }, 5000);
-  
-    return () => {
-      clearInterval(refrescarProgressos); // Limpeza do intervalo ao desmontar o componente
-    };
-  }, []);  // Este useEffect será chamado uma única vez quando o componente for montado
-  
+    buscandoProgresso();
+  }, [materia]); 
 
   const handleVideoClick = async (url, disciplina, aulaId) => {
-    // Recupera o userId do localStorage ou de outro método que você usa para armazenar a informação do usuário
-    const userId = localStorage.getItem('userId'); // Ou use outro método como um estado global
-
-
+    const userId = localStorage.getItem('userId');
+  
     if (!userId) {
       console.error('User ID is null!');
       alert('Usuário não encontrado. Por favor, faça login.');
       return;
     }
   
-    console.log('User ID:', userId); // Verifique se o userId está correto
-    console.log('Disciplina:', disciplina);
-    console.log('Aula ID:', aulaId);
-  
     try {
-      // Realiza a requisição POST para atualizar o progresso da aula
-      const response = await axios.post('https://b7089caa-e476-42ba-82fb-5e43b96e9b62-00-1jkv1557vl3bj.worf.replit.dev/api/progress/atualizarAula', { 
-        userId,          // Envia o userId
-        disciplina,      // Envia a disciplina
-        aulaId           // Envia o ID da aula
+      const response = await axios.post('https://b1eaafe0-1717-43fd-bb29-cad15cdb9b1d-00-2aila5im7ld5y.janeway.replit.dev/api/progress/atualizarAula', {
+        userId,
+        disciplina,
+        aulaId
       });
-      
+  
       console.log('Progresso atualizado:', response.data);
+  
+      // Aqui, você pode atualizar o estado para refletir a mudança do progresso na UI
+      buscandoProgresso(); // Atualiza a lista de progresso após a atualização
     } catch (error) {
       console.error('Erro ao atualizar progresso:', error.response ? error.response.data : error.message);
     }
   
-    // Abre o vídeo em uma nova aba
     window.open(url, "_blank", "noreferrer");
   };
+  
   
   
   const handleLoginClick = () => {
@@ -194,101 +193,171 @@ function Aulas() {
   // Definindo a variável `conteudoMaterias`
   const conteudoMaterias = {
     matematica: (
-      <div className="geral" ref={conteudoCardRef}>
+      <div className="geral">
         <h1 className='conteudo-titulo'>Matemática</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.matematica}
+             <img 
+                ref={bonecoRefMenu} 
+                src={Logo} 
+                alt="Logo EDUSMART" 
+                className="boneco" 
+                style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+            />
           </div>
         </div>
       </div>
     ),
     portugues: (
-      <div className="geral" ref={conteudoCardRef}>
+      <div className="geral">
         <h1 className='conteudo-titulo'>Português</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.portugues}
+             <img 
+  ref={bonecoRefMenu} 
+  src={Logo} 
+  alt="Logo EDUSMART" 
+  className="boneco" 
+  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+/>
           </div>
         </div>
       </div>
     ),
     fisica: (
-      <div className="geral" ref={conteudoCardRef}>
+      <div className="geral">
         <h1 className='conteudo-titulo'>Física</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.fisica}
+             <img 
+  ref={bonecoRefMenu} 
+  src={Logo} 
+  alt="Logo EDUSMART" 
+  className="boneco" 
+  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+/>
           </div>
         </div>
       </div>
     ),
     quimica: (
-      <div className="geral" ref={conteudoCardRef}>
+      <div className="geral">
         <h1 className='conteudo-titulo'>Química</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.quimica}
+             <img 
+  ref={bonecoRefMenu} 
+  src={Logo} 
+  alt="Logo EDUSMART" 
+  className="boneco" 
+  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+/>
           </div>
         </div>
       </div>
     ),
     biologia: (
-      <div className="geral"> ref={conteudoCardRef}
+      <div className="geral">
         <h1 className='conteudo-titulo'>Biologia</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.biologia}
+             <img 
+  ref={bonecoRefMenu} 
+  src={Logo} 
+  alt="Logo EDUSMART" 
+  className="boneco" 
+  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+/>
           </div>
         </div>
       </div>
     ),
     geografia: (
-      <div className="geral" ref={conteudoCardRef}>
+      <div className="geral">
         <h1 className='conteudo-titulo'>Geografia</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.geografia}
+             <img 
+  ref={bonecoRefMenu} 
+  src={Logo} 
+  alt="Logo EDUSMART" 
+  className="boneco" 
+  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+/>
           </div>
         </div>
       </div>
     ),
     historia: (
-      <div className="geral" ref={conteudoCardRef}>
+      <div className="geral">
         <h1 className='conteudo-titulo'>História</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.historia}
+             <img 
+  ref={bonecoRefMenu} 
+  src={Logo} 
+  alt="Logo EDUSMART" 
+  className="boneco" 
+  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+/>
           </div>
         </div>
       </div>
     ),
     sociologia: (
-      <div className="geral" ref={conteudoCardRef}>
+      <div className="geral">
         <h1 className='conteudo-titulo'>Sociologia</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.sociologia}
+             <img 
+  ref={bonecoRefMenu} 
+  src={Logo} 
+  alt="Logo EDUSMART" 
+  className="boneco" 
+  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+/>
           </div>
         </div>
       </div>
     ),
     filosofia: (
-      <div className="geral" ref={conteudoCardRef}>
+      <div className="geral">
         <h1 className='conteudo-titulo'>Filosofia</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.filosofia}
+             <img 
+  ref={bonecoRefMenu} 
+  src={Logo} 
+  alt="Logo EDUSMART" 
+  className="boneco" 
+  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+/>
           </div>
         </div>
       </div>
     ),
     ingles: (
-      <div className="geral" ref={conteudoCardRef}>
+      <div className="geral">
         <h1 className='conteudo-titulo'>Inglês</h1>
         <div className="conteudo-card-wrapper">
           <div className='conteudo-card'>
             {listaComponenteMaterias.ingles}
+             <img 
+  ref={bonecoRefMenu} 
+  src={Logo} 
+  alt="Logo EDUSMART" 
+  className="boneco" 
+  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+/>
           </div>
         </div>
       </div>
@@ -326,7 +395,6 @@ function Aulas() {
                 </Link>
               </li>
             ))}
-             <div ref={bonecoRef} className="boneco" style={{ top: `${posY}px`, left: `${posX}px` }}></div>
           </ul>
         </div>
 
@@ -341,5 +409,6 @@ function Aulas() {
     </>
   );
 }
+
 
 export default Aulas;

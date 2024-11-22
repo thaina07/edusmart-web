@@ -132,6 +132,7 @@ body {
 
 /* Ajuste para deixar os cards lado a lado */
 .conteudo-card-wrapper {
+    position: relative;
     display: flex; /* Alinha os cards lado a lado */
     height: 100%;
     background-color: white;
@@ -284,7 +285,6 @@ body {
 .boneco {
     width: 50px;
     height: 50px;
-    background-color: red;
     position: absolute;
     transition: all 0.1s ease;  /* Tornando o movimento mais suave */
   }
