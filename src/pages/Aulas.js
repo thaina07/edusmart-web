@@ -5,6 +5,7 @@ import axios from 'axios';
 import Logo from '../assets/logo.png';
 import Perfil from '../assets/perfil.png';
 import './Aulas.css';
+import Gif from '../assets/gif.gif';
 
 const userId = localStorage.getItem('userId');
 const userName = localStorage.getItem('userName') || 'Usuário';
@@ -12,14 +13,15 @@ console.log('User ID após login:', localStorage.getItem('userId'));
 
 
 function Aulas() {
+  const [loading, setLoading] = useState(true);
+  const bonecoRefMenu = useRef(null);  // Adicione esta linha
+  const [searchTerm, setSearchTerm] = useState('');
   const [velocidadeY, setVelocidadeY] = useState(2);
-  const [posX, setPosX] = useState(0); // Posição inicial X
-  const [posY, setPosY] = useState(0); // Posição inicial Y
+  const [posX, setPosX] = useState(0);
+  const [posY, setPosY] = useState(0);
   const [velocidadeX, setVelocidadeX] = useState(2);
-  const bonecoRef = useRef(null); // Definindo a referência
-  const bonecoRefCard = useRef(null); // Ref para o boneco no card
-  const bonecoRefMenu = useRef(null); // Ref para o boneco no menu de matérias
-  const conteudoCardRef = useRef(null); // Ref para o conteúdo onde o boneco se move
+  const bonecoRefCard = useRef(null);
+  const conteudoCardRef = useRef(null);
   const navigate = useNavigate();
   const { materia } = useParams();
   const [conteudoAtual, setConteudoAtual] = useState(materia || 'matematica');
@@ -47,7 +49,7 @@ function Aulas() {
 
   async function buscarProgressoPorDisciplina(disciplina) {
     try {
-      const response = await axios.post('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/progress/buscarProgresso', {
+      const response = await axios.get('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/progress/buscarProgresso', {
         disciplina, userId
       });
       console.log('Resposta da API:', response.data);
@@ -94,6 +96,7 @@ function Aulas() {
   
 
   async function buscandoProgresso() {
+    setLoading(true); 
     try {
       const response = await axios.get('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/products/find');
       const listaMaterias = response.data.produtos;
@@ -111,8 +114,10 @@ function Aulas() {
         ingles: await gerarComponentes(listaMaterias.filter(item => item.categoria === "Inglês"), "Inglês"),
       };
       setListaComponenteMaterias(componentesMaterias);
-    } catch (err) {
+    }catch (err) {
       console.error('Erro ao buscar progresso: ', err);
+    } finally {
+      setLoading(false); // Termina o carregamento
     }
   }
   useEffect(() => {
@@ -151,7 +156,10 @@ function Aulas() {
     const animacaoId = requestAnimationFrame(moverBoneco);
     return () => cancelAnimationFrame(animacaoId);
   }, [velocidadeX, velocidadeY]);
-  
+
+  useEffect(() => {
+    setConteudoAtual(materia || 'matematica');
+  }, [materia]);
   
   useEffect(() => {
     buscandoProgresso();
@@ -186,7 +194,19 @@ function Aulas() {
     window.open(url, "_blank", "noreferrer");
   };
   
-  
+  // Função para tratar mudanças na barra de pesquisa
+  // Função para tratar mudanças na barra de pesquisa
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
+
+  // Função para filtrar as matérias com base na pesquisa
+  const filteredMaterias = Object.keys(listaComponenteMaterias)
+    .filter(key => key.includes(searchTerm) || searchTerm === '')
+    .map(key => ({
+      key,
+      componentes: listaComponenteMaterias[key]
+    }));
   
   const handleLoginClick = () => {
     navigate('/Profile');
@@ -198,16 +218,21 @@ function Aulas() {
       <div className="geral">
         <h1 className='conteudo-titulo'>Matemática</h1>
         <div className="conteudo-card-wrapper">
-          <div className='conteudo-card'>
-            {listaComponenteMaterias.matematica}
-             <img 
-                ref={bonecoRefMenu} 
-                src={Logo} 
-                alt="Logo EDUSMART" 
-                className="boneco" 
-                style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
-            />
-          </div>
+    <div className='conteudo-card'>
+    {loading && (
+    <div className="loading-container">
+      <img src={Gif} alt="Carregando..." className="loading-gif" />
+    </div>
+  )}
+      {listaComponenteMaterias[conteudoAtual]}
+      <img 
+        ref={bonecoRefMenu} 
+        src={Logo} 
+        alt="Logo EDUSMART" 
+        className="boneco" 
+        style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+      />
+    </div>
         </div>
       </div>
     ),
@@ -215,16 +240,21 @@ function Aulas() {
       <div className="geral">
         <h1 className='conteudo-titulo'>Português</h1>
         <div className="conteudo-card-wrapper">
-          <div className='conteudo-card'>
-            {listaComponenteMaterias.portugues}
-             <img 
-  ref={bonecoRefMenu} 
-  src={Logo} 
-  alt="Logo EDUSMART" 
-  className="boneco" 
-  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
-/>
-          </div>
+    <div className='conteudo-card'>
+    {loading && (
+    <div className="loading-container">
+      <img src={Gif} alt="Carregando..." className="loading-gif" />
+    </div>
+  )}
+      {listaComponenteMaterias[conteudoAtual]}
+      <img 
+        ref={bonecoRefMenu} 
+        src={Logo} 
+        alt="Logo EDUSMART" 
+        className="boneco" 
+        style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+      />
+    </div>
         </div>
       </div>
     ),
@@ -232,16 +262,21 @@ function Aulas() {
       <div className="geral">
         <h1 className='conteudo-titulo'>Física</h1>
         <div className="conteudo-card-wrapper">
-          <div className='conteudo-card'>
-            {listaComponenteMaterias.fisica}
-             <img 
-  ref={bonecoRefMenu} 
-  src={Logo} 
-  alt="Logo EDUSMART" 
-  className="boneco" 
-  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
-/>
-          </div>
+    <div className='conteudo-card'>
+    {loading && (
+    <div className="loading-container">
+      <img src={Gif} alt="Carregando..." className="loading-gif" />
+    </div>
+  )}
+      {listaComponenteMaterias[conteudoAtual]}
+      <img 
+        ref={bonecoRefMenu} 
+        src={Logo} 
+        alt="Logo EDUSMART" 
+        className="boneco" 
+        style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+      />
+    </div>
         </div>
       </div>
     ),
@@ -249,16 +284,21 @@ function Aulas() {
       <div className="geral">
         <h1 className='conteudo-titulo'>Química</h1>
         <div className="conteudo-card-wrapper">
-          <div className='conteudo-card'>
-            {listaComponenteMaterias.quimica}
-             <img 
-  ref={bonecoRefMenu} 
-  src={Logo} 
-  alt="Logo EDUSMART" 
-  className="boneco" 
-  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
-/>
-          </div>
+    <div className='conteudo-card'>
+    {loading && (
+    <div className="loading-container">
+      <img src={Gif} alt="Carregando..." className="loading-gif" />
+    </div>
+  )}
+      {listaComponenteMaterias[conteudoAtual]}
+      <img 
+        ref={bonecoRefMenu} 
+        src={Logo} 
+        alt="Logo EDUSMART" 
+        className="boneco" 
+        style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+      />
+    </div>
         </div>
       </div>
     ),
@@ -266,16 +306,21 @@ function Aulas() {
       <div className="geral">
         <h1 className='conteudo-titulo'>Biologia</h1>
         <div className="conteudo-card-wrapper">
-          <div className='conteudo-card'>
-            {listaComponenteMaterias.biologia}
-             <img 
-  ref={bonecoRefMenu} 
-  src={Logo} 
-  alt="Logo EDUSMART" 
-  className="boneco" 
-  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
-/>
-          </div>
+    <div className='conteudo-card'>
+    {loading && (
+    <div className="loading-container">
+      <img src={Gif} alt="Carregando..." className="loading-gif" />
+    </div>
+  )}
+      {listaComponenteMaterias[conteudoAtual]}
+      <img 
+        ref={bonecoRefMenu} 
+        src={Logo} 
+        alt="Logo EDUSMART" 
+        className="boneco" 
+        style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+      />
+    </div>
         </div>
       </div>
     ),
@@ -283,16 +328,21 @@ function Aulas() {
       <div className="geral">
         <h1 className='conteudo-titulo'>Geografia</h1>
         <div className="conteudo-card-wrapper">
-          <div className='conteudo-card'>
-            {listaComponenteMaterias.geografia}
-             <img 
-  ref={bonecoRefMenu} 
-  src={Logo} 
-  alt="Logo EDUSMART" 
-  className="boneco" 
-  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
-/>
-          </div>
+    <div className='conteudo-card'>
+    {loading && (
+    <div className="loading-container">
+      <img src={Gif} alt="Carregando..." className="loading-gif" />
+    </div>
+  )}
+      {listaComponenteMaterias[conteudoAtual]}
+      <img 
+        ref={bonecoRefMenu} 
+        src={Logo} 
+        alt="Logo EDUSMART" 
+        className="boneco" 
+        style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+      />
+    </div>
         </div>
       </div>
     ),
@@ -300,16 +350,21 @@ function Aulas() {
       <div className="geral">
         <h1 className='conteudo-titulo'>História</h1>
         <div className="conteudo-card-wrapper">
-          <div className='conteudo-card'>
-            {listaComponenteMaterias.historia}
-             <img 
-  ref={bonecoRefMenu} 
-  src={Logo} 
-  alt="Logo EDUSMART" 
-  className="boneco" 
-  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
-/>
-          </div>
+    <div className='conteudo-card'>
+    {loading && (
+    <div className="loading-container">
+      <img src={Gif} alt="Carregando..." className="loading-gif" />
+    </div>
+  )}
+      {listaComponenteMaterias[conteudoAtual]}
+      <img 
+        ref={bonecoRefMenu} 
+        src={Logo} 
+        alt="Logo EDUSMART" 
+        className="boneco" 
+        style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+      />
+    </div>
         </div>
       </div>
     ),
@@ -317,16 +372,21 @@ function Aulas() {
       <div className="geral">
         <h1 className='conteudo-titulo'>Sociologia</h1>
         <div className="conteudo-card-wrapper">
-          <div className='conteudo-card'>
-            {listaComponenteMaterias.sociologia}
-             <img 
-  ref={bonecoRefMenu} 
-  src={Logo} 
-  alt="Logo EDUSMART" 
-  className="boneco" 
-  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
-/>
-          </div>
+    <div className='conteudo-card'>
+    {loading && (
+    <div className="loading-container">
+      <img src={Gif} alt="Carregando..." className="loading-gif" />
+    </div>
+  )}
+      {listaComponenteMaterias[conteudoAtual]}
+      <img 
+        ref={bonecoRefMenu} 
+        src={Logo} 
+        alt="Logo EDUSMART" 
+        className="boneco" 
+        style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+      />
+    </div>
         </div>
       </div>
     ),
@@ -334,16 +394,21 @@ function Aulas() {
       <div className="geral">
         <h1 className='conteudo-titulo'>Filosofia</h1>
         <div className="conteudo-card-wrapper">
-          <div className='conteudo-card'>
-            {listaComponenteMaterias.filosofia}
-             <img 
-  ref={bonecoRefMenu} 
-  src={Logo} 
-  alt="Logo EDUSMART" 
-  className="boneco" 
-  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
-/>
-          </div>
+    <div className='conteudo-card'>
+    {loading && (
+    <div className="loading-container">
+      <img src={Gif} alt="Carregando..." className="loading-gif" />
+    </div>
+  )}
+      {listaComponenteMaterias[conteudoAtual]}
+      <img 
+        ref={bonecoRefMenu} 
+        src={Logo} 
+        alt="Logo EDUSMART" 
+        className="boneco" 
+        style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+      />
+    </div>
         </div>
       </div>
     ),
@@ -351,16 +416,21 @@ function Aulas() {
       <div className="geral">
         <h1 className='conteudo-titulo'>Inglês</h1>
         <div className="conteudo-card-wrapper">
-          <div className='conteudo-card'>
-            {listaComponenteMaterias.ingles}
-             <img 
-  ref={bonecoRefMenu} 
-  src={Logo} 
-  alt="Logo EDUSMART" 
-  className="boneco" 
-  style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
-/>
-          </div>
+    <div className='conteudo-card'>
+       {loading && (
+    <div className="loading-container">
+      <img src={Gif} alt="Carregando..." className="loading-gif" />
+    </div>
+  )}
+      {listaComponenteMaterias[conteudoAtual]}
+      <img 
+        ref={bonecoRefMenu} 
+        src={Logo} 
+        alt="Logo EDUSMART" 
+        className="boneco" 
+        style={{ top: `${posY}px`, left: `${posX}px`, position: 'absolute' }} 
+      />
+    </div>
         </div>
       </div>
     ),
@@ -373,8 +443,13 @@ function Aulas() {
           <img src={Logo} alt="Logo" />
           EDUSMART
         </a>
-        <div className='barraPesquisa'>
-          <input type="text" placeholder="Pesquise qualquer coisa" />
+        <div className="barraPesquisa">
+          <input
+            type="text"
+            placeholder="Pesquise qualquer matéria"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
           <span className="search-icon2">
             <i className="fas fa-search"></i>
           </span>
@@ -389,7 +464,7 @@ function Aulas() {
         <div className="materias">
           <h2 className="materias-titulo">Escolha a matéria</h2>
           <ul className="materias-lista">
-            {Object.keys(conteudoMaterias).map((key) => (
+            {filteredMaterias.map(({ key }) => (
               <li key={key}>
                 <Link to={`/Aulas/${key}`} onClick={() => setConteudoAtual(key)}>
                   <i className={`fas ${getIconForMateria(key)}`} style={{ marginRight: '8px' }} />
@@ -402,9 +477,15 @@ function Aulas() {
 
         <div className="container-aula">
           <div className="conteudo-aula">
-            <div className="conteudo-materia">
-              {conteudoMaterias[conteudoAtual]}
+          <div className="container-aula">
+          {loading ? (
+            <div className="loading-container">
+              <img src={Gif} alt="Carregando..." className="loading-gif" />
             </div>
+          ) : (
+            <>{conteudoMaterias[conteudoAtual]}</>
+          )}
+        </div>
           </div>
         </div>
       </div>

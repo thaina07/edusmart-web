@@ -27,15 +27,23 @@ const Perfil = ({ setIsLogado }) => {
   };
 
   const handleGoogleLogin = useGoogleLogin({
-    flow: 'auth-code'
-  })
+    flow: 'auth-code',
+    onSuccess: (response) => {
+      setIsLogado(true); // O usuário logou com sucesso via Google
+      // Aqui você pode armazenar os dados do usuário ou fazer outras ações necessárias
+    },
+    onError: (error) => {
+      setIsLogado(false); // Se o login falhar
+      console.error('Erro ao fazer login com Google:', error);
+    }
+  });
+  
 
   // Marque a função como assíncrona
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const apiUrl = 'https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/users/login'; 
-
-
+    const apiUrl = 'https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/users/login';
+    
     try {
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -44,27 +52,29 @@ const Perfil = ({ setIsLogado }) => {
         },
         body: JSON.stringify({ email, senha }),
       });
+  
       console.log('Resposta da API:', response);
+  
       const data = await response.json();
       console.log('Dados recebidos:', data); 
-      console.log("oie", data.userId);
-      if (response.ok) {
-        setLoginStatus("Login efetuado com sucesso!");
   
-        localStorage.setItem('userName', data.nome); // Armazena o nome do usuário
-        localStorage.setItem('userId', data.userId); // Certifique-se de armazenar o userId
-        navigate('/Home'); // Navegue para a Home
+      if (response.ok) {
+        localStorage.setItem('userName', data.nome);  // Salve o nome após o login
+        setIsLogado(true);  // Atualiza o estado de login para true
+        localStorage.setItem('userId', data.userId);  // Certifique-se de armazenar o userId
+        navigate('/Home');  // Navegue para a Home
       } else {
         setLoginStatus(data.message || "Erro ao efetuar login. Verifique suas credenciais.");
-        setIsLogado(false); 
+        setIsLogado(false); // Caso o login falhe, mantenha o estado como false
       }
     } catch (error) {
       setLoginStatus("Erro ao se conectar com a API. Tente novamente mais tarde.");
       console.error(error);
     }
-
+  
     console.log(email, senha);
-  };
+  };  
+  
 
   return (
     <>

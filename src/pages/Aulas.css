@@ -108,7 +108,7 @@ body {
 
 .container-aula {
     padding: 20px;
-    margin-left: 20%; /* Espaço para a barra de matérias */
+    margin-left: 10%; /* Espaço para a barra de matérias */
     margin-bottom: 60px; /* Espaço para o footer */
     height: calc(100vh - 80px - 60px); /* Altura ajustada */
     flex-grow: 1;
@@ -287,5 +287,17 @@ body {
     height: 50px;
     position: absolute;
     transition: all 0.1s ease;  /* Tornando o movimento mais suave */
+  }
+  .loading-container {
+    position: absolute;
+    top: 40%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    z-index: 10; /* Certifica que o GIF está na frente do conteúdo */
+  }
+  
+  .loading-gif {
+    width: 500px;
+    height: auto;
   }
   

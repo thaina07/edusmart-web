@@ -1,0 +1,112 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: #2D407C;
+    color: white;
+    height: 8%;
+   
+  }
+  
+  
+  
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo img {
+    width: 90px;
+    height: auto;
+    margin-left: 0px;
+  }
+  .pai-config-container {
+    width: 100%;
+    height: calc(90% - 80px);
+  
+    padding-top: 300px;
+    padding-bottom: 64px;
+  
+    margin-top: 80px;
+  }
+  
+  .config-container {
+    position: relative;
+  
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 120px;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  .barraPesquisa {
+    position: relative;
+    width: 500px;
+    display: flex;
+    align-items: center;
+  }
+  
+  
+  .pesquisa-header {}
+  
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+    outline: none;
+    border-color: #1f2f98;
+  }
+  
+  .save-btn {
+    background-color: #1f2f98;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .save-btn:hover {
+    background-color: #162478;
+  }
+  
+  
+  .footer-config-page {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: auto;
+  
+  }

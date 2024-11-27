@@ -14,13 +14,13 @@ body {
    
   }
   
-  .logo {
+  .voltar {
     display: flex;
     font-family: 'Chela One', cursive;
     align-items: center; /* Garante que o logo e o texto estejam alinhados verticalmente */
   }
-  .logo img {
-    width: 90px; /* Tamanho da imagem do logo */
+  .voltar img {
+    width: 40px; /* Tamanho da imagem do logo */
     height: auto;
     margin-left: 0px;
   }
@@ -83,4 +83,8 @@ body {
   .lista li {
     font-size: 20px; /* Aumenta o tamanho da fonte */
     margin-bottom: 15px; /* Adiciona espaçamento entre os itens da lista */
+  }
+.loading-gif {
+  width: 100px;
+  height: auto;
 }

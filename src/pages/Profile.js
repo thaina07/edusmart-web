@@ -5,35 +5,54 @@ import { useNavigate } from 'react-router-dom';
 import Perfil from '../assets/perfil.png';
 import Logo from '../assets/logo.png'; // Adicione a importação do Logo
 import axios from 'axios'; // Biblioteca para fazer requisições HTTP
+import Voltar from '../assets/voltar.png';
+import Gif from '../assets/gif.gif';
 
 function Profile() {
+    const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState(null); // Estado para armazenar os dados do usuário
-
     useEffect(() => {
         // Função para buscar dados do usuário da API
         async function fetchUserData() {
             try {
-                const response = await axios.get('https://b19c12c9-4a42-48c0-9e18-45cccae95eb0-00-1sgyzy7k6iy73.janeway.replit.dev/api/users/buscar'); // Exemplo de URL da API
+                const response = await axios.get('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/users/buscar'); // Exemplo de URL da API
                 setUserData(response.data); // Armazena os dados do usuário no estado
             } catch (error) {
                 console.error("Erro ao buscar dados do usuário", error);
             }
         }
-
         fetchUserData();
     }, []);
-
+    useEffect(() => {
+        console.log('userName no localStorage:', localStorage.getItem('userName'));
+      }, []);
+      useEffect(() => {
+        // Simulação de carregamento de dados
+        setTimeout(() => {
+          setUserData({ name: 'Usuário' }); // Exemplo de dados carregados
+          setLoading(false);
+        }, 2000); // Simula um atraso de 2 segundos
+      }, []);
     // Se os dados do usuário ainda não foram carregados, exibe um loading
     if (!userData) {
-        return <div>Carregando...</div>;
-    }
+        if (loading) {
+          return (
+            <div className="loading-container">
+              <img src={Gif} alt="Carregando..." className="loading-gif" />
+            </div>
+          );
+        }
+        return <div>Carregando dados...</div>; // Texto ou algo adicional enquanto não há loading
+      }
+      
+            
 
     return (
         <>
             <header className="header">
-                <div className="logo">
-                    <img src={Logo} alt="Logo" />EDUSMART
-                </div>
+                <a href="/home" className="voltar">
+                    <img src={Voltar} alt="Logo" />
+                </a>
                 <div className='barraPesquisa-p'>
                     <input type="text" placeholder="Pesquise qualquer coisa" />
                     <span className="search-icon">

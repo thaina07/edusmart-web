@@ -10,10 +10,10 @@ import Perfil from './pages/Perfil';
 import Inicial from './pages/Inicial';
 import Profile from './pages/Profile';
 import Aulas from './pages/Aulas';
-import VideoPage from './pages/VideoPage';
+import ConfigPage from './pages/ConfigPage';
 
 function App() {
-  const [ setIsLogado] = useState(false);
+  const [isLogado, setIsLogado] = useState(false);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
 
@@ -82,8 +82,8 @@ function App() {
             <Route path="/aulas/filosofia" element={<Aulas />} />
             <Route path="/aulas/fisica" element={<Aulas />} />
             <Route path="/aulas/questoes" element={<Aulas />} />
-            <Route path="/video/:videoId" element={<VideoPage />} />
             <Route path='/profile' element={<Profile />} />
+            <Route path='/configuracoes' element={<ConfigPage/>}/>
           </Routes>
         </div>
       </Router>

@@ -10,14 +10,70 @@ import axios from "axios";
 
 function Home() {
   const navigate = useNavigate();
+  const [userName, setUserName] = useState(localStorage.getItem('userName') || 'Visitante');
   const [progressos, setProgressos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const userImage = localStorage.getItem('userImage');
   localStorage.setItem('userName', 'Nome do usuário');
-  const userName = localStorage.getItem('userName') || 'Visitante';
+  useEffect(() => {
+    async function fetchUserData() {
+      console.log("Iniciando fetchUserData...");
+      const userIdItem = localStorage.getItem('userId');
+      console.log("userId recuperado do localStorage:", userIdItem);
+  
+      if (!userIdItem) {
+        console.warn("Nenhum userId encontrado.");
+        setLoading(false);
+        return;
+      }
+  
+      try {
+        const response = await axios.post(
+          'https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/progress/buscarUser',
+          { userId: userIdItem }
+        );
+  
+        console.log("Resposta da API:", response.data);
+  
+        if (response.data) {
+          const userData = response.data;
+          console.log("Dados do usuário recebidos:", userData);
+  
+          if (userData.nome) {
+            console.log("Nome encontrado:", userData.nome);
+            localStorage.setItem('userName', userData.nome);
+            setUserName(userData.nome); // Chama a atualização do estado
+          } else {
+            console.warn("Nome não encontrado nos dados do usuário.");
+          }
+          setProgressos(userData.progressos || []);
+        } else {
+          console.warn("Nenhum dado de usuário retornado.");
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados do usuário:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  
+    fetchUserData();
+  }, []);
+  
+  useEffect(() => {
+    const storedName = localStorage.getItem('userName');
+    console.log("Nome recuperado do localStorage:", storedName); // Verifica se o nome está sendo recuperado corretamente
+    if (storedName) {
+        setUserName(storedName);
+    } else {
+        setUserName('Visitante'); // Caso o nome não esteja no localStorage
+    }
+}, []);
 
+  
+  
   const buscarProgressosHome = useCallback(async () => {
     const userIdItem = localStorage.getItem('userId');
     if (!userIdItem) {
