@@ -22,7 +22,6 @@
   }
   .pai-config-container {
     width: 100%;
-    height: calc(90% - 80px);
   
     padding-top: 300px;
     padding-bottom: 64px;
@@ -35,7 +34,7 @@
   
     max-width: 600px;
     margin: 0 auto;
-    margin-top: 120px;
+    margin-top: 100px;
     padding: 20px;
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
@@ -66,12 +65,7 @@
     box-sizing: border-box;
   }
   
-  .barraPesquisa {
-    position: relative;
-    width: 500px;
-    display: flex;
-    align-items: center;
-  }
+  
   
   
   .pesquisa-header {}

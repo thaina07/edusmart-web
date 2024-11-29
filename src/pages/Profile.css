@@ -61,12 +61,12 @@ body {
     color: #666;
   }
   .perfil-container{
-    width: 70%;
-    height: 700px;
+    width: 60%;
+    height: 500px;
     border-radius: 20px;
     border: 2px solid rgb(109, 108, 108);
-    margin-top: 25%;
-    margin-left: 15%;
+    margin-top: 6%;
+    margin-left: 20%;
   }
   .perfil{
     margin-top: 40px;
@@ -88,3 +88,60 @@ body {
   width: 100px;
   height: auto;
 }
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.avatar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.avatar-option {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+button {
+  margin-top: 20px;
+}
+.perfil img {
+  width: 150px; /* ou o tamanho desejado */
+  height: 150px;
+  border-radius: 50%; /* Garante que seja circular */
+  object-fit: cover; /* Ajusta a imagem ao tamanho sem distorcer */
+  border: 2px solid #ccc; /* Pode adicionar borda */
+}
+
+.camera-icon {
+  position: absolute;
+  top: 55%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+

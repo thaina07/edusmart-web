@@ -1,26 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Importando o useEffect
 import './ConfigPage.css'; // Estilos do componente
 import Logo from '../assets/logo.png';
+import Voltar from '../assets/voltar.png';
+import axios from 'axios'; // Importando o axios para fazer requisições
+
 const ConfigPage = () => {
   // Estados para armazenar os dados do formulário
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [userId, setUserId] = useState(null);  // Estado para armazenar o ID do usuário logado
+
+  // Função para buscar dados do usuário da API
+  useEffect(() => {
+    const loggedUserId = localStorage.getItem('userId'); // Simulando que o ID do usuário logado está no localStorage
+
+    if (loggedUserId) {
+      setUserId(loggedUserId);  // Setando o ID do usuário logado
+
+      async function fetchUserData() {
+        try {
+          const response = await axios.get(`https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/buscar/${loggedUserId}`);
+          console.log('dados do usuario', response.data);
+          
+          // Preencher os campos com os dados do usuário
+          setName(response.data.name);
+          setEmail(response.data.email);
+        } catch (error) {
+          console.error("Erro ao buscar dados do usuário", error);
+        }
+      }
+
+      fetchUserData();
+    }
+  }, []); // Executa apenas uma vez quando o componente é montado
 
   // Função para manipular o envio do formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (password !== confirmPassword) {
       alert('As senhas não coincidem.');
       return;
     }
 
-    const userData = { name, email, password };
+    const userData = { name, email };
+    
+    // Se a senha foi alterada, adicione ela ao corpo da requisição
+    if (password) {
+      userData.password = password;
+    }
 
     try {
-      const response = await fetch('https://b19c12c9-4a42-48c0-9e18-45cccae95eb0-00-1sgyzy7k6iy73.janeway.replit.dev/', {
-        method: 'POST',
+      const response = await fetch(`https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/update/${userId}`, {
+        method: 'POST',  // Usando PUT ou PATCH dependendo da lógica da sua API
         headers: {
           'Content-Type': 'application/json',
         },
@@ -42,11 +76,11 @@ const ConfigPage = () => {
     <>
       {/* Cabeçalho com logo e barra de pesquisa */}
       <header className="header-home">
-        <div className="logo">
-          <img src={Logo} alt="Logo" />EDUSMART
-        </div>
+        <a href="/home" className="voltar">
+          <img src={Voltar} alt="Logo" />
+        </a>
         <div className="barraPesquisa">
-          <input type="text" className='pesquisa-header' placeholder="Pesquise" />
+          <input type="text" className="pesquisa-header" placeholder="Pesquise" />
           <span className="search-icon">
             <i className="fas fa-search"></i>
           </span>
@@ -54,7 +88,7 @@ const ConfigPage = () => {
       </header>
 
       {/* Formulário de Configurações */}
-      <div className='pai-config-container'>
+      <div className="pai-config-container">
         <div className="config-container">
           <h1>Configurações</h1>
           <form onSubmit={handleSubmit}>
@@ -98,10 +132,10 @@ const ConfigPage = () => {
 
             <button type="submit" className="save-btn">Salvar Alterações</button>
           </form>
-
         </div>
       </div>
-      <footer className='footer-config-page'>
+
+      <footer className="footer-config-page">
         <p>Contato: (11) 12345-6078 | Email: edusmart@gmail.com</p>
       </footer>
     </>

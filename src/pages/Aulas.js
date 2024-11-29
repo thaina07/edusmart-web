@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,6 +13,8 @@ console.log('User ID após login:', localStorage.getItem('userId'));
 
 
 function Aulas() {
+  const [userImage, setUserImage] = useState(localStorage.getItem("userImage") || Perfil);
+  const [userName, setUserName] = useState(localStorage.getItem("userName") || "Visitante");
   const [loading, setLoading] = useState(true);
   const bonecoRefMenu = useRef(null);  // Adicione esta linha
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,6 +28,43 @@ function Aulas() {
   const { materia } = useParams();
   const [conteudoAtual, setConteudoAtual] = useState(materia || 'matematica');
   const [listaComponenteMaterias, setListaComponenteMaterias] = useState({});
+  
+
+
+  const fetchUserAvatar = useCallback(async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
+    try {
+      const response = await axios.post(
+        "https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/avatar-usuario",
+        { userId }
+      );
+
+      if (response.status === 200) {
+        const avatarUrl = response.data.avatar;
+        setUserImage(avatarUrl);
+        localStorage.setItem("userImage", avatarUrl); // Atualiza o localStorage
+      }
+    } catch (error) {
+      console.error("Erro ao buscar avatar do usuário:", error);
+    }
+  }, []);
+
+  // Função para buscar o nome do usuário
+  const fetchUserName = useCallback(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      setUserName(storedName);
+    } else {
+      setUserName("Visitante");
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUserAvatar();
+    fetchUserName();
+  }, [fetchUserAvatar, fetchUserName]);
 
 
   function getIconForMateria(materia) {
@@ -46,11 +85,12 @@ function Aulas() {
 
   axios.defaults.timeout = 10000;
   
+  
 
-  async function buscarProgressoPorDisciplina(disciplina) {
+  async function buscarProgressoPorDisciplina(disciplina, topico) {
     try {
-      const response = await axios.get('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/progress/buscarProgresso', {
-        disciplina, userId
+      const response = await axios.post('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/progress/buscar', {
+        userId, disciplina, topico
       });
       console.log('Resposta da API:', response.data);
       return response.data || [];
@@ -62,12 +102,10 @@ function Aulas() {
   
 
   async function gerarComponentes(lista, disciplina) {
-    const progressoDisciplina = await buscarProgressoPorDisciplina(disciplina);
-    
-    // Verifique a estrutura da resposta antes de tentar acessar
-    console.log('Progresso da disciplina:', progressoDisciplina);
-  
-    return lista.map((materia) => {
+    // console.log('Progresso da disciplina:', progressoDisciplina);
+
+    const listaMateriaComponente = await Promise.all(lista.map(async (materia) => {
+      const progressoDisciplina = await buscarProgressoPorDisciplina(disciplina, materia.nome, materia._id);
       const progresso = progressoDisciplina && progressoDisciplina.length > 0
         ? progressoDisciplina.find(p => p.aulaId === materia._id)?.progresso || 0
         : 0;
@@ -91,14 +129,16 @@ function Aulas() {
           </div>
         </div>
       );
-    });
+    }));
+    
+    return listaMateriaComponente;
   }  
   
 
   async function buscandoProgresso() {
     setLoading(true); 
     try {
-      const response = await axios.get('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/products/find');
+      const response = await axios.get('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/products/find');
       const listaMaterias = response.data.produtos;
 
       const componentesMaterias = {
@@ -177,9 +217,10 @@ function Aulas() {
     }
   
     try {
-      const response = await axios.post('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/progress/atualizarAula', {
+      const response = await axios.post('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/progress/atualizarAula', {
         userId,
         disciplina,
+        aulaId,
         aula
       });
   
@@ -194,7 +235,6 @@ function Aulas() {
     window.open(url, "_blank", "noreferrer");
   };
   
-  // Função para tratar mudanças na barra de pesquisa
   // Função para tratar mudanças na barra de pesquisa
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
@@ -455,7 +495,7 @@ function Aulas() {
           </span>
         </div>
         <div className="profile" onClick={handleLoginClick}>
-          <img src={Perfil} alt="Perfil" className="profile-img" />
+          <img src={userImage} alt="Perfil" className="profile-img" />
           <span className="saudacao">Olá, {userName}</span>
         </div>
       </header>

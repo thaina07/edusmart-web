@@ -9,13 +9,36 @@ import './Home.css';
 import axios from "axios";
 
 function Home() {
+  const [userImage, setUserImage] = useState(localStorage.getItem('userImage') || Perfil);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const [userName, setUserName] = useState(localStorage.getItem('userName') || 'Visitante');
   const [progressos, setProgressos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const userImage = localStorage.getItem('userImage');
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
+  async function fetchUserAvatar() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
+
+    try {
+      const response = await axios.post('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/avatar-usuario', { userId });
+      if (response.status === 200) {
+        const avatarUrl = response.data.avatar;
+        setUserImage(avatarUrl); // Atualiza o estado com o avatar
+        localStorage.setItem('userImage', avatarUrl); // Armazena no localStorage
+      }
+    } catch (error) {
+      console.error('Erro ao buscar avatar do usuário:', error);
+    }
+  }
+  useEffect(() => {
+    fetchUserAvatar(); // Chama a função para buscar o avatar
+  }, []);
+  
   localStorage.setItem('userName', 'Nome do usuário');
   useEffect(() => {
     async function fetchUserData() {
@@ -31,7 +54,7 @@ function Home() {
   
       try {
         const response = await axios.post(
-          'https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/progress/buscarUser',
+          'https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/progress/buscarUser',
           { userId: userIdItem }
         );
   
@@ -118,19 +141,24 @@ function Home() {
     <>
       <header className="header-home">
         <div className="logo">
-          <img src={userImage || Logo} alt="Logo ou Foto do Usuário" />
+          <img src={Logo} alt="Logo ou Foto do Usuário" />
           EDUSMART
         </div>
 
-        <div className='barraPesquisa'>
-          <input type="text" placeholder="Pesquise qualquer coisa" />
+        <div className="barraPesquisa">
+          <input
+            type="text"
+            placeholder="Pesquise qualquer matéria"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
           <span className="search-icon2">
             <i className="fas fa-search"></i>
           </span>
         </div>
 
         <div className="profile" onClick={handleLoginClick}>
-          <img src={Perfil} alt="Perfil" className="profile-img" />
+        <img src={userImage} alt="Perfil" className="profile-img" />
           <span className="saudacao">Olá, {userName}</span>
         </div>
       </header>

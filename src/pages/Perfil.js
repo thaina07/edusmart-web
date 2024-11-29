@@ -42,7 +42,7 @@ const Perfil = ({ setIsLogado }) => {
   // Marque a função como assíncrona
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const apiUrl = 'https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/users/login';
+    const apiUrl = 'https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/login';
     
     try {
       const response = await fetch(apiUrl, {

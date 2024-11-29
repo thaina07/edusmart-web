@@ -47,6 +47,7 @@ body {
 
 .container-home {
     position: relative;
+    height: 100%;
     display: flex;
     background-color: white;
     margin-top: 0px; /* Espaço abaixo do cabeçalho fixo */
