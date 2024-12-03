@@ -42,7 +42,7 @@ const Perfil = ({ setIsLogado }) => {
   // Marque a função como assíncrona
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const apiUrl = 'https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/login';
+    const apiUrl = 'https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/login';
     
     try {
       const response = await fetch(apiUrl, {
@@ -79,13 +79,12 @@ const Perfil = ({ setIsLogado }) => {
   return (
     <>
       <header className="header">
-        <div className="logo"><a href="/Inicial"><img src={Logo} alt="Logo" /></a>EDUSMART</div>
-        <div className='barraPesquisa'>
-          <input type="text" placeholder="Pesquise qualquer coisa" />
-          <span className="search-icon">
-            <i className="fas fa-search"></i>
-          </span>
-        </div>
+        <div className="logoPe"><a href="/Inicial"><img src={Logo} alt="Logo" /></a>EDUSMART</div>
+        <nav class="nav-links">
+    <a href="#features">Funcionalidades</a>
+    <a href="#about">Sobre</a>
+    <a href="#support">Suporte</a>
+  </nav>
 
         <div className="action">
           <button className="btn" onClick={handleLoginClick}>Fazer login</button>
@@ -118,7 +117,7 @@ const Perfil = ({ setIsLogado }) => {
             />
             <button className="submit">Fazer Login</button>
             <div className="forgot-password">
-              <a href="/forgot-password">Esqueceu sua senha?</a>
+              <a href="/forgotpassword">Esqueceu sua senha?</a>
             </div>
 
             {loginStatus && (

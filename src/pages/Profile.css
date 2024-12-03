@@ -1,91 +1,223 @@
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* O corpo vai ocupar pelo menos 100% da altura da viewport */
-    margin: 0;
-  }
-  .header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background-color: #2D407C;
-    z-index: 1000;
-    display: flex;
-   
-  }
-  
-  .voltar {
-    display: flex;
-    font-family: 'Chela One', cursive;
-    align-items: center; /* Garante que o logo e o texto estejam alinhados verticalmente */
-  }
-  .voltar img {
-    width: 40px; /* Tamanho da imagem do logo */
-    height: auto;
-    margin-left: 0px;
-  }
-  .barraPesquisa-p {
-    position: relative; /* Para que o ícone possa ser posicionado dentro do campo */
-    width: 500px; /* Largura da barra de pesquisa */
-    display: flex;
-    align-items: center;
-    margin-right: 30%;
-    margin-top: 10px;
-  }
-  
-  .barraPesquisa-p input {
-    width: 100%;
-    padding: 10px 40px 10px 20px; /* Espaço extra para o ícone */
-    border-radius: 20px;
-    border: 2px solid #ccc;
-    font-size: 16px;
-  }
-  
-  .search-icon {
-    position: absolute;
-    right: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-    background-color: white;
-    border: 2px solid #ccc;
-    border-radius: 50%;
-    cursor: pointer;
-    top: -4px; 
-  }
-  
-  .search-icon i {
-    font-size: 16px;
-    color: #666;
-  }
-  .perfil-container{
-    width: 60%;
-    height: 500px;
-    border-radius: 20px;
-    border: 2px solid rgb(109, 108, 108);
-    margin-top: 6%;
-    margin-left: 20%;
-  }
-  .perfil{
-    margin-top: 40px;
-  }
-  .conteudo-perfil{
-    display: flex;
-    margin-top: 10%;
-  }
-  .lista{
-    list-style: none;
-    padding: 0;
-    width: 100%;
-  }
-  .lista li {
-    font-size: 20px; /* Aumenta o tamanho da fonte */
-    margin-bottom: 15px; /* Adiciona espaçamento entre os itens da lista */
-  }
+/* Garantir que body e html ocupem toda a altura e largura da tela */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #003cff; /* Cor de fundo */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Tema claro e escuro */
+body.light-theme {
+  background-color: #e8f0ff;
+  color: #333;
+}
+
+body.dark-theme {
+  background-color: #2d2d2d;
+  color: #fff;
+}
+
+.headerP {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: transparent;
+  z-index: 1000;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Ajusta o espaçamento entre os ícones */
+}
+.voltar {
+    color: #333;
+  text-decoration: none;
+  margin-left: 15px; /* Afasta o botão "voltar" do canto */
+}
+
+.notifications {
+  position: relative;
+  font-size: 1.5rem;
+  top: -8px;
+  right: -8px;
+}
+
+
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2d407c;
+}
+
+input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+.theme-label {
+  margin-left: 8px;
+  font-size: 0.9rem;
+  color: inherit;
+}
+
+.page-profile {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 4rem; /* Compensa o header fixo */
+  background: linear-gradient(135deg, #e8f0ff 0%, #d0e4f7 100%);
+  position: relative;
+}
+
+/* Container do perfil */
+.perfil-container {
+  position: relative;
+  width: 80%;
+  max-width: 800px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 15px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+/* Estilo da logo */
+.logo {
+  position: absolute;
+  top: -30px; /* Ajusta a posição da logo para sobrepor o perfil */
+  right: calc(50% - 40px); /* Centraliza horizontalmente sobre o container */
+  width: 80px;
+  height: auto;
+  margin-right: 49%;
+}
+
+.logo img {
+  width: 100%;
+  height: auto;
+}
+
+/* Estilo da imagem do perfil */
+.perfil {
+  position: relative;
+  text-align: center;
+}
+
+.perfil img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #2D407C;
+}
+
+/* Ícone da câmera */
+.camera-icon {
+  position: absolute;
+  bottom: 10px;
+  right: 42%;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.camera-icon:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+h2 {
+  font-size: 24px;
+  color: #333;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.conteudo-perfil {
+  margin-top: 0px;
+}
+
+.lista {
+  list-style: none;
+  padding: 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.lista li {
+  margin-bottom: 20px;
+}
+
+.lista a {
+  text-decoration: none;
+  color: #2D407C;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+.lista a i {
+  margin-right: 10px;
+}
+
+.lista a:hover {
+  color: #1c2d57;
+  background-color: #e0e0e0;
+  padding-left: 20px;
+}
+
 .loading-gif {
-  width: 100px;
+  width: 80px;
   height: auto;
 }
 
@@ -120,28 +252,25 @@ body {
   height: 80px;
   border-radius: 50%;
   cursor: pointer;
+  border: 2px solid #ddd;
+  transition: transform 0.3s ease;
+}
+
+.avatar-option:hover {
+  transform: scale(1.1);
 }
 
 button {
   margin-top: 20px;
-}
-.perfil img {
-  width: 150px; /* ou o tamanho desejado */
-  height: 150px;
-  border-radius: 50%; /* Garante que seja circular */
-  object-fit: cover; /* Ajusta a imagem ao tamanho sem distorcer */
-  border: 2px solid #ccc; /* Pode adicionar borda */
-}
-
-.camera-icon {
-  position: absolute;
-  top: 55%;
-  left: 55%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: #2D407C;
   color: white;
-  padding: 8px;
-  border-radius: 50%;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
+button:hover {
+  background-color: #1c2d57;
+}

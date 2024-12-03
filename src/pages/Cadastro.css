@@ -5,11 +5,12 @@ body {
   margin: 0;
 }
 
-.logo {
+.logoC {
   display: flex;
   align-items: center; /* Garante que o logo e o texto estejam alinhados verticalmente */
+  font-family: 'Chela One', cursive;
 }
-.logo img {
+.logoC img {
   width: 90px; /* Tamanho da imagem do logo */
   height: auto;
   margin-left: 0px;
@@ -78,10 +79,11 @@ body {
     align-items: center;
     height: 100vh; 
     background-color: white;
+    margin-top: 30%;
   }
   
   .register-form {
-    margin-top: 700px;
+    margin-top: 40%;
     padding: 30px;
     border-radius: 15px;
     max-width: 400px;

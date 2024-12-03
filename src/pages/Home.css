@@ -12,31 +12,33 @@ body {
     background-color: #2D407C;
     z-index: 1000;
     display: flex;
-  
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
   
-  .logo {
+  .logoH {
     display: flex;
     font-family: 'Chela One', cursive;
     color: white;
     align-items: center; /* Garante que o logo e o texto estejam alinhados verticalmente */
   }
-  .logo img {
+  .logoH img {
     width: 90px; /* Tamanho da imagem do logo */
     height: auto;
-    margin-left: 0px;
+
   }
-  .barraPesquisa {
-    position: relative; /* Para que o ícone possa ser posicionado dentro do campo */
-    width: 500px; /* Largura da barra de pesquisa */
+  .barraPesquisaH {
+    position: relative;
+    width: 500px;
     display: flex;
     align-items: center;
     margin-left: 10%;
   }
   
-  .barraPesquisa input {
+  .barraPesquisaH input {
     width: 100%;
-    padding: 10px 40px 10px 20px; /* Espaço extra para o ícone */
+    padding: 10px 40px 10px 20px;
     border-radius: 20px;
     border: 2px solid #ccc;
     font-size: 16px;
@@ -50,8 +52,8 @@ body {
     align-items: center;
     width: 30px;
     height: 30px;
-    background-color: white;
-    border: 2px solid #ccc;
+    background-color: rgb(157, 198, 245);
+    border: 2px solid #575757;
     border-radius: 50%;
     cursor: pointer;
   }
@@ -61,11 +63,12 @@ body {
     color: #666;
   }
   
+  
   .profile {
     display: flex;
     align-items: center;
     cursor: pointer;
-    margin-left: 20%;
+    margin-left: 30%;
   }
   
   .profile-img {
@@ -87,7 +90,7 @@ body {
   }
   .conteudo {
     padding: 20px;
-    margin-top: 5%; /* Espaço para o header */
+    margin-top: 15%; /* Espaço para o header */
     margin-left: 20%; /* Espaço para a barra de matérias */
     margin-bottom: 60px; /* Espaço para o footer */
     height: calc(100vh - 80px - 60px); /* Altura ajustada */

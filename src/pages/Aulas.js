@@ -37,7 +37,7 @@ function Aulas() {
 
     try {
       const response = await axios.post(
-        "https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/avatar-usuario",
+        "https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/avatar-usuario",
         { userId }
       );
 
@@ -89,7 +89,7 @@ function Aulas() {
 
   async function buscarProgressoPorDisciplina(disciplina, topico) {
     try {
-      const response = await axios.post('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/progress/buscar', {
+      const response = await axios.post('https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/progress/buscar', {
         userId, disciplina, topico
       });
       console.log('Resposta da API:', response.data);
@@ -138,7 +138,7 @@ function Aulas() {
   async function buscandoProgresso() {
     setLoading(true); 
     try {
-      const response = await axios.get('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/products/find');
+      const response = await axios.get('https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/products/find');
       const listaMaterias = response.data.produtos;
 
       const componentesMaterias = {
@@ -217,7 +217,7 @@ function Aulas() {
     }
   
     try {
-      const response = await axios.post('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/progress/atualizarAula', {
+      const response = await axios.post('https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/progress/atualizarAula', {
         userId,
         disciplina,
         aulaId,
@@ -479,11 +479,11 @@ function Aulas() {
   return (
     <>
       <header className="header-home">
-        <a href="/home" className="logo">
+        <a href="/home" className="logoA">
           <img src={Logo} alt="Logo" />
           EDUSMART
         </a>
-        <div className="barraPesquisa">
+        <div className="barraPesquisaA">
           <input
             type="text"
             placeholder="Pesquise qualquer matéria"

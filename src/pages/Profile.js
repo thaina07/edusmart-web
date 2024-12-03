@@ -47,6 +47,7 @@ function Profile() {
     const [showAvatarModal, setShowAvatarModal] = useState(false);
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState({ nome: '', email: '', profilePhoto: '' });
+    const [isDarkTheme, setIsDarkTheme] = useState(false);
 
     const [avatarData, setAvatarData] = useState('');
 
@@ -54,7 +55,7 @@ function Profile() {
         // Função para buscar dados do usuário da API
         async function fetchUserData() {
             try {
-                const response = await axios.get('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/buscar'); // Exemplo de URL da API
+                const response = await axios.get('https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/buscar'); // Exemplo de URL da API
                 console.log('dados do usuario', response.data)
                 setUserData(response.data); // Armazena os dados do usuário no estado
             } catch (error) {
@@ -67,7 +68,7 @@ function Profile() {
             const userId = localStorage.getItem('userId')
 
             try {
-                const response = await axios.post('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/avatar-usuario', {userId})
+                const response = await axios.post('https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/avatar-usuario', {userId})
                 if (response.status == 200) {
                     setAvatarData(response.data.avatar)
                 }
@@ -89,7 +90,7 @@ function Profile() {
         console.log('tga:', userData._id)
         try {
             // Enviar requisição à API para atualizar o avatar do usuário
-            const response = await axios.post('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/upload-photo', {
+            const response = await axios.post('https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/upload-photo', {
                 userId,
                 profilePhoto: avatar
             });
@@ -112,7 +113,14 @@ function Profile() {
             alert("Não foi possível salvar o avatar. Tente novamente.");
         }
     };
-    
+    const toggleTheme = () => {
+        setIsDarkTheme(!isDarkTheme);
+        document.body.classList.toggle('dark-theme', !isDarkTheme);
+        document.body.classList.toggle('light-theme', isDarkTheme);
+    };
+    useEffect(() => {
+        document.body.classList.add('light-theme'); // Define tema padrão como claro
+    }, []);
     
     const handleAvatarClick = () => {
         setShowAvatarModal(true);
@@ -120,6 +128,37 @@ function Profile() {
     const handleCloseModal = () => {
         setShowAvatarModal(false);
     };
+
+    const handleLogout = () => {
+        const confirmLogout = window.confirm("Você tem certeza que deseja sair?");
+        if (confirmLogout) {
+            // Limpar dados do usuário (se necessário)
+            localStorage.removeItem('userId'); // Exemplo de limpeza do localStorage
+            // Redirecionar para a página de login
+            window.location.href = "/perfil"; 
+        }
+    };
+    const handleDeleteAccount = async () => {
+        const confirmDelete = window.confirm("Você tem certeza que deseja excluir sua conta?");
+        if (confirmDelete) {
+            const userId = localStorage.getItem('userId');
+            try {
+                const response = await axios.post('https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/delete', {
+                    userId
+                });
+    
+                if (response.status === 200) {
+                    alert("Conta excluída com sucesso.");
+                    localStorage.removeItem('userId'); // Limpa os dados do localStorage
+                    window.location.href = "/perfil"; // Redireciona para a página de login
+                }
+            } catch (error) {
+                console.error("Erro ao excluir a conta:", error);
+                alert("Não foi possível excluir sua conta. Tente novamente.");
+            }
+        }
+    };
+    
 
 
     useEffect(() => {
@@ -148,18 +187,27 @@ function Profile() {
 
     return (
         <>
-            <header className="header">
+        <div className="page-profile">
+        <header className="headerP">
                 <a href="/home" className="voltar">
-                    <img src={Voltar} alt="Logo" />
+                    <i className="fas fa-arrow-left"></i>
                 </a>
-                <div className='barraPesquisa-p'>
-                    <input type="text" placeholder="Pesquise qualquer coisa" />
-                    <span className="search-icon">
-                        <i className="fas fa-search"></i>
-                    </span>
+                <div className="header-right">
+                    <div className="notifications">
+                        <i className="fas fa-bell"></i>
+                    </div>
+                    <label className="theme-switch">
+                        <input type="checkbox" onChange={toggleTheme} />
+                        <span className="slider round"></span>
+                        <span className="theme-label">Mudar Tema</span>
+                    </label>
                 </div>
             </header>
             <div className="perfil-container">
+            <div className="logo">
+            <img src={Logo} alt="Logo"/>
+
+</div>
             <div className="perfil">
                     <img src={avatarData || Perfil} alt="profile" />
                     <span className="camera-icon" onClick={handleAvatarClick}>
@@ -170,9 +218,9 @@ function Profile() {
                 <div className="conteudo-perfil">
                     <ul className="lista">
                         <li>{userData.email}</li> {/* Substitui pelo email do usuário */}
-                        <li><a href="/configuracoes">Configurações</a></li>
-                        <li><a href="/sair">Sair</a></li>
-                        <li><a href="/excluir">Excluir conta</a></li>
+                        <li><a href="/configuracoes"><i class="fas fa-cogs"></i>Configurações</a></li>
+                        <li><a href="#" onClick={handleLogout}><i className="fas fa-sign-out-alt"></i>Sair</a></li>
+                        <li><a href="#" onClick={handleDeleteAccount}><i className="fas fa-trash-alt"></i>Excluir conta</a></li>
                     </ul>
                 </div>
                 {showAvatarModal && (
@@ -182,6 +230,7 @@ function Profile() {
                     
                 />
             )}
+            </div>
             </div>
         </>
     );

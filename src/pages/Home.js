@@ -20,12 +20,28 @@ function Home() {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
   };
+  const materias = [
+    { nome: "Matemática", icon: faCalculator, link: "/aulas/matematica" },
+    { nome: "Português", icon: faBookOpen, link: "/aulas/portugues" },
+    { nome: "Química", icon: faFlask, link: "/aulas/quimica" },
+    { nome: "História", icon: faHistory, link: "/aulas/historia" },
+    { nome: "Geografia", icon: faGlobe, link: "/aulas/geografia" },
+    { nome: "Física", icon: faFlask, link: "/aulas/fisica" },
+    { nome: "Sociologia", icon: faUsers, link: "/aulas/sociologia" },
+    { nome: "Filosofia", icon: faComments, link: "/aulas/filosofia" },
+    { nome: "Inglês", icon: faLanguage, link: "/aulas/ingles" },
+    { nome: "Questões", icon: faQuestion, link: "/aulas/questoes" },
+  ];
+
+  const filteredMaterias = materias.filter(materia =>
+    materia.nome.toLowerCase().includes(searchTerm)
+  );
   async function fetchUserAvatar() {
     const userId = localStorage.getItem('userId');
     if (!userId) return;
 
     try {
-      const response = await axios.post('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/avatar-usuario', { userId });
+      const response = await axios.post('https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/avatar-usuario', { userId });
       if (response.status === 200) {
         const avatarUrl = response.data.avatar;
         setUserImage(avatarUrl); // Atualiza o estado com o avatar
@@ -38,8 +54,34 @@ function Home() {
   useEffect(() => {
     fetchUserAvatar(); // Chama a função para buscar o avatar
   }, []);
+  async function fetchUserName() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
   
-  localStorage.setItem('userName', 'Nome do usuário');
+    try {
+      const response = await axios.post(
+        'https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/nome-usuario', // Alterar para sua URL correta
+        { userId }
+      );
+  
+      if (response.status === 200 && response.data.nome) {
+        const userName = response.data.nome;
+        setUserName(userName); // Atualiza o estado com o nome do usuário
+        localStorage.setItem('userName', userName); // Armazena no localStorage
+        console.log(localStorage.getItem('userId'));
+      } else {
+        console.warn('Nome do usuário não encontrado.');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar nome do usuário:', error);
+    }
+  }
+  useEffect(() => {
+    fetchUserName();
+  }, []);
+  
+  
+
   useEffect(() => {
     async function fetchUserData() {
       console.log("Iniciando fetchUserData...");
@@ -54,7 +96,7 @@ function Home() {
   
       try {
         const response = await axios.post(
-          'https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/progress/buscarUser',
+          'https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/progress/buscarUser',
           { userId: userIdItem }
         );
   
@@ -106,7 +148,7 @@ function Home() {
     }
 
     try {
-      const listaProgresso = await axios.post('https://c55023c1-63fe-4aa0-aff2-9acc396c9f9c-00-26z23t0h0ej8o.worf.replit.dev/api/progress/buscarUser', {
+      const listaProgresso = await axios.post('https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/progress/buscarUser', {
         userId: userIdItem
       });
     
@@ -140,12 +182,12 @@ function Home() {
   return (
     <>
       <header className="header-home">
-        <div className="logo">
-          <img src={Logo} alt="Logo ou Foto do Usuário" />
+        <div className="logoH">
+          <img src={Logo} alt="Logo" />
           EDUSMART
         </div>
 
-        <div className="barraPesquisa">
+        <div className="barraPesquisaH">
           <input
             type="text"
             placeholder="Pesquise qualquer matéria"
@@ -167,17 +209,17 @@ function Home() {
         <div className="materias">
           <h2 className="materias-titulo">Escolha a matéria</h2>
           <ul className="materias-lista">
-            <li><a href="/aulas/matematica" aria-label="Aulas de Matemática"><FontAwesomeIcon icon={faCalculator} /> Matemática</a></li>
-            <li><a href="/aulas/portugues" aria-label="Aulas de Português"><FontAwesomeIcon icon={faBookOpen} /> Português</a></li>
-            <li><a href="/aulas/quimica" aria-label="Aulas de Química"><FontAwesomeIcon icon={faFlask} /> Química</a></li>
-            <li><a href="/aulas/historia" aria-label="Aulas de História"><FontAwesomeIcon icon={faHistory} /> História</a></li>
-            <li><a href="/aulas/geografia" aria-label="Aulas de Geografia"><FontAwesomeIcon icon={faGlobe} /> Geografia</a></li>
-            <li><a href="/aulas/fisica" aria-label="Aulas de Física"><FontAwesomeIcon icon={faFlask} /> Física</a></li>
-            <li><a href="/aulas/sociologia" aria-label="Aulas de Sociologia"><FontAwesomeIcon icon={faUsers} /> Sociologia</a></li>
-            <li><a href="/aulas/filosofia" aria-label="Aulas de Filosofia"><FontAwesomeIcon icon={faComments} /> Filosofia</a></li>
-            <li><a href="/aulas/ingles" aria-label="Aulas de Inglês"><FontAwesomeIcon icon={faLanguage} /> Inglês</a></li>
-            <li><a href="/aulas/questoes" aria-label="Questões para estudar"><FontAwesomeIcon icon={faQuestion} /> Questões para estudar</a></li>
-            <li><a href="/configuracoes" aria-label="Configurações"><FontAwesomeIcon icon={faPen} /> Configurações</a></li>
+            {filteredMaterias.length > 0 ? (
+              filteredMaterias.map((materia, index) => (
+                <li key={index}>
+                  <a href={materia.link} aria-label={`Aulas de ${materia.nome}`}>
+                    <FontAwesomeIcon icon={materia.icon} /> {materia.nome}
+                  </a>
+                </li>
+              ))
+            ) : (
+              <p>Nenhuma matéria encontrada</p>
+            )}
           </ul>
         </div>
 
@@ -186,18 +228,19 @@ function Home() {
           <div className="banner"><img src={Banner} alt="banner-img" /></div>
           <h2 className="progresso-titulo">Seu progresso</h2>
           <div className="progresso-container">
-  {progressos && progressos.length > 0 ? (
-    progressos.map((item) => (
-      <div className="progresso-quadrado" key={item.id}>
-        Progresso {item.discplina}
-        <div className="progress-bar">
-          <div className="progress" style={{ width: `${item.progresso}%` }}></div>
-        </div>
+          {progressos && progressos.length > 0 ? (
+  progressos.map((item, index) => (
+    <div className="progresso-quadrado" key={item.id || index}>
+      Progresso {item.discplina}
+      <div className="progress-bar">
+        <div className="progress" style={{ width: `${item.progresso}%` }}></div>
       </div>
-    ))
-  ) : (
-    <p>Nenhum progresso encontrado</p>
-  )}
+    </div>
+  ))
+) : (
+  <p>Nenhum progresso encontrado</p>
+)}
+
 </div>
         </div>
       </div>

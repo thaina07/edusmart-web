@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Inicial.css';
 import Imagem1 from '../assets/imagem1.png';
@@ -8,6 +7,19 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import Ana from '../assets/ana.png';
 import Carlos from '../assets/carlos.png';
 import Celulares from '../assets/image.png'
+import React, { useState } from 'react';
+
+const Modal = ({ title, content, onClose }) => {
+    return (
+        <div className="modal-overlay">
+            <div className="modal">
+                <h2>{title}</h2>
+                <p>{content}</p>
+                <button onClick={onClose} className="btn-close">Fechar</button>
+            </div>
+        </div>
+    );
+};
 
 // Componente Testimonial
 const Testimonial = ({ name, role, text, photo }) => {
@@ -51,6 +63,8 @@ const styles = {
 // Componente Inicial
 const Inicial = () => {
     const navigate = useNavigate();
+    const [modalInfo, setModalInfo] = useState({ isOpen: false, title: '', content: '' });
+
 
     const handleRegisterClick = () => {
         navigate('/Cadastro');
@@ -60,24 +74,38 @@ const Inicial = () => {
         navigate('/Perfil');
     };
 
+    const openModal = (title, content) => {
+        setModalInfo({ isOpen: true, title, content });
+    };
+
+    const closeModal = () => {
+        setModalInfo({ isOpen: false, title: '', content: '' });
+    };
+
     return (
         <>
             <header className="header">
-                <div className="logo">
+                <div className="logoIn">
                     <img src={Logo} alt="Logo" />EDUSMART
                 </div>
-                <div className='barraPesquisa'>
-                    <input type="text" placeholder="Pesquise" />
-                    <span className="search-icon">
-                        <i className="fas fa-search"></i>
-                    </span>
-                </div>
+                <nav class="nav-links">
+                <a href="#" onClick={() => openModal('Funcionalidades', 'Aqui no site é possível é possível encontrar todas as aulas de matérias e conteúdos que caem no ENEM, além disso, você pode acompanhar seu progresso de estudos de forma prática')}>Funcionalidades</a>
+                    <a href="#" onClick={() => openModal('Sobre', 'EduSmart é uma plataforma inovadora para aprendizado eficiente, com o progresso você pode se motivar em assistir cada vez mais aulas e se programar até o ENEM')}>Sobre</a>
+                    <a href="#" onClick={() => openModal('Suporte', 'Entre em contato com nossa equipe de suporte para dúvidas.')}>Suporte</a>
+  </nav>
 
                 <div className="action">
                     <button className="btn" onClick={handleLoginClick}>Fazer login</button>
                     <button className="btn" onClick={handleRegisterClick}>Cadastrar-se</button>
                 </div>
             </header>
+            {modalInfo.isOpen && (
+                <Modal 
+                    title={modalInfo.title} 
+                    content={modalInfo.content} 
+                    onClose={closeModal} 
+                />
+            )}
 
             <div className="home-container">
                 <div className="home-content">
@@ -85,7 +113,7 @@ const Inicial = () => {
                     <p>No EduSmart você pode acompanhar seu progresso<br />todos os dias</p>
                     <p className="secondary-text">Baixe nosso app e comece sua jornada<br />de aprendizado hoje!</p>
 
-                    <button className="btn download-btn">Baixar</button>
+                    <button className="btn-download-btn">Baixar</button>
                 </div>
                 <div className="home-image">
                     <img src={Imagem1} alt="imagem" />

@@ -44,7 +44,7 @@ const Cadastro = ({ setIsLogado }) => {
 
     try {
         // Faz a requisição POST para a API de cadastro
-        const response = await fetch('https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/register', {
+        const response = await fetch('https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const Cadastro = ({ setIsLogado }) => {
         if (response.ok) {
             setIsLogado(true);
             localStorage.setItem('userName', nome); // Armazena o nome no localStorage
-            navigate('/Home'); // Redireciona para a página inicial
+            navigate('/perfil'); // Redireciona para a página inicial
             setMsg('Cadastro feito com sucesso!');
         } else {
             // Captura a mensagem de erro retornada pela API
@@ -73,13 +73,12 @@ const Cadastro = ({ setIsLogado }) => {
   return (
     <>
       <header className="header">
-      <div className="logo"><img src={Logo} alt="Logo" />EDUSMART</div>
-        <div className='barraPesquisa'>
-          <input type="text" placeholder="Pesquise qualquer coisa" />
-            <span className="search-icon">
-              <i className="fas fa-search"></i>
-            </span>
-        </div>
+      <div className="logoC"><a href="/inicial"><img src={Logo} alt="Logo" /></a>EDUSMART</div>
+      <nav class="nav-links">
+    <a href="#features">Funcionalidades</a>
+    <a href="#about">Sobre</a>
+    <a href="#support">Suporte</a>
+  </nav>
 
         <div className="action">
           <button className="btn" onClick={handleLoginClick}>Fazer login</button>

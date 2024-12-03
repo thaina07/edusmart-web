@@ -11,6 +11,7 @@ import Inicial from './pages/Inicial';
 import Profile from './pages/Profile';
 import Aulas from './pages/Aulas';
 import ConfigPage from './pages/ConfigPage';
+import ForgotPassword from './pages/ForgotPassword';
 
 function App() {
   const [isLogado, setIsLogado] = useState(false);
@@ -42,28 +43,12 @@ function App() {
     googleLogout();
     setProfile(null);
   };
+  
 
   return (
       <Router>
         <div className="App">
-          <h2>React Google Login</h2>
-          <br />
-          <br />
-          {profile ? (
-            <div>
-              <img src={profile.picture} alt="imagem do usuário" />
-              <h3>Usuário conectado</h3>
-              <p>Nome: {profile.name}</p>
-              <p>Endereço de e-mail: {profile.email}</p>
-              <br />
-              <br />
-              <button onClick={logOut}>Sair</button>
-            </div>
-          ) : (
-            <GoogleLogin>
-              <button>Entrar com o Google <span role="img" aria-label="foguete">🚀</span></button>
-            </GoogleLogin>
-          )}
+
 
           <Routes>
             <Route path='/home' element={<Home />} />
@@ -84,6 +69,7 @@ function App() {
             <Route path="/aulas/questoes" element={<Aulas />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/configuracoes' element={<ConfigPage/>}/>
+            <Route path='/forgotpassword' element={<ForgotPassword/>}/>
           </Routes>
         </div>
       </Router>

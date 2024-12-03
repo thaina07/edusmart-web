@@ -1,144 +1,134 @@
-import React, { useState, useEffect } from 'react'; // Importando o useEffect
-import './ConfigPage.css'; // Estilos do componente
-import Logo from '../assets/logo.png';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Voltar from '../assets/voltar.png';
-import axios from 'axios'; // Importando o axios para fazer requisições
+import './ConfigPage.css';
+import Config from '../assets/config.png';
 
 const ConfigPage = () => {
-  // Estados para armazenar os dados do formulário
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [userId, setUserId] = useState(null);  // Estado para armazenar o ID do usuário logado
 
-  // Função para buscar dados do usuário da API
+  const userId = localStorage.getItem('userId'); // Recuperando o userId do localStorage
+
   useEffect(() => {
-    const loggedUserId = localStorage.getItem('userId'); // Simulando que o ID do usuário logado está no localStorage
-
-    if (loggedUserId) {
-      setUserId(loggedUserId);  // Setando o ID do usuário logado
-
+    if (userId) {
       async function fetchUserData() {
         try {
-          const response = await axios.get(`https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/buscar/${loggedUserId}`);
-          console.log('dados do usuario', response.data);
-          
-          // Preencher os campos com os dados do usuário
-          setName(response.data.name);
-          setEmail(response.data.email);
+          const response = await axios.get(
+            `https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/buscar`,
+            {
+              headers: {
+                'Authorization': `Bearer ${userId}`, // Envia o userId como Bearer token (se necessário)
+              }
+            }
+          );
+          setName(response.data.name || '');  // Garante que 'name' seja uma string
+          setEmail(response.data.email || '');  // Garante que 'email' seja uma string
         } catch (error) {
-          console.error("Erro ao buscar dados do usuário", error);
+          console.error('Erro ao buscar dados do usuário', error);
         }
       }
-
       fetchUserData();
     }
-  }, []); // Executa apenas uma vez quando o componente é montado
+  }, [userId]);
 
-  // Função para manipular o envio do formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (password !== confirmPassword) {
-      alert('As senhas não coincidem.');
+
+    // Validação dos campos
+    if (!email || !password) {
+      alert("Email e senha são obrigatórios.");
       return;
     }
 
-    const userData = { name, email };
-    
-    // Se a senha foi alterada, adicione ela ao corpo da requisição
-    if (password) {
-      userData.password = password;
-    }
+    const userData = { email, senha: password };
+
+    console.log("Dados sendo enviados:", userData);
 
     try {
-      const response = await fetch(`https://a4cbe45d-4755-42a7-bb7c-8a519c38281c-00-2vitw121bd8i8.picard.replit.dev/api/users/update/${userId}`, {
-        method: 'POST',  // Usando PUT ou PATCH dependendo da lógica da sua API
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
+      const response = await fetch(
+        `https://c71fb123-e176-4c5f-99b7-13c231aefe98-00-16a60ugt11qeq.riker.replit.dev/api/users/update/${userId}`, // Passando userId na URL
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userData),
+        }
+      );
 
-      if (response.ok) {
-        alert('Dados salvos com sucesso!');
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Erro do servidor:', errorData.message);
+        alert('Erro ao salvar os dados: ' + errorData.message);
       } else {
-        alert('Erro ao salvar dados.');
+        alert('Dados salvos com sucesso!');
       }
     } catch (error) {
-      console.error('Erro ao salvar os dados:', error);
-      alert('Erro na conexão com o servidor.');
+      console.error('Erro na requisição:', error);
+      alert('Erro ao salvar os dados.');
     }
   };
 
   return (
-    <>
-      {/* Cabeçalho com logo e barra de pesquisa */}
-      <header className="header-home">
+    <div className="config-page-container">
+      <header className='header-config'>
         <a href="/home" className="voltar">
-          <img src={Voltar} alt="Logo" />
+          <img src={Voltar} alt="Voltar para home" />
         </a>
-        <div className="barraPesquisa">
-          <input type="text" className="pesquisa-header" placeholder="Pesquise" />
-          <span className="search-icon">
-            <i className="fas fa-search"></i>
-          </span>
-        </div>
       </header>
-
-      {/* Formulário de Configurações */}
-      <div className="pai-config-container">
-        <div className="config-container">
-          <h1>Configurações</h1>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Nome e Sobrenome</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <h2>Redefinir Senha</h2>
-
-            <div className="form-group">
-              <label>Nova Senha</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Digite a Senha Novamente</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-
-            <button type="submit" className="save-btn">Salvar Alterações</button>
-          </form>
-        </div>
+      <div className="config-image">
+        <img src={Config} alt="imagem" />
       </div>
 
-      <footer className="footer-config-page">
-        <p>Contato: (11) 12345-6078 | Email: edusmart@gmail.com</p>
-      </footer>
-    </>
+      <div className="config-container">
+        <div className="icon-container">
+          <i className="fas fa-user-cog"></i>
+        </div>
+        <h2 className="config-title">Configurações</h2>
+        <form onSubmit={handleSubmit} className="config-form">
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input-field"
+            />
+          </div>
+          <h2 className="password-title">Redefinir Senha</h2>
+          <div className="form-group">
+            <label>Nova Senha</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-field"
+            />
+          </div>
+          <div className="form-group">
+            <label>Confirme a Nova Senha</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="input-field"
+            />
+          </div>
+          <div className="button-group">
+            <button type="submit" className="save-button">
+              Salvar Alterações
+            </button>
+            <a href='/home'>
+            <button type="button" className="cancel-button">
+              Cancelar
+            </button></a>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 
